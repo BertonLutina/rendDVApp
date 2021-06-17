@@ -3,24 +3,24 @@ import { StyleSheet, Text, View } from 'react-native'
 import { Image, Input,Button } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import UrlImage from '../../assets/rendv_images/icon.png'
-import { colorblue, colorGreen, colorRose, colorYello, colorDarkGreen, colorWhite, colorLightGreen, colorLightblue,colorLightRose } from '../../constants/Colors'
+import { colorblue, colorGreen, colorRose, colorYello, colorDarkGreen, colorWhite, colorLightGreen, colorLightblue,colorLightRose, colorDarkblue } from '../../constants/Colors'
 
 const LoginPage = ({navigation}) => {
     return (
         <View style={styles.container}>
             <View style={styles.subcont}>
             <Image style={{height:100, width:100, position:"relative", top:40}} source={UrlImage}/>
-            <Input inputContainerStyle={styles.input} containerStyle={{height:50}} placeholder="Email"/>
-            <Input inputContainerStyle={styles.input} containerStyle={{height:60}} placeholder="******"/>
+            <Input keyboardType="numeric" inputContainerStyle={styles.input} containerStyle={{height:50}} placeholder="Phonenumber"/>
             <Button 
                 buttonStyle={{borderColor: "white", borderWidth:2,padding:10, height:50}} 
                 containerStyle={styles.btn1}  title="Sign in" type="outline"
                 titleStyle={{color:"white"}} onPress={() => navigation.navigate('Tabs')}/>
+                <Text style={{ padding:10, color: colorWhite , height:40}} >Or, is this your first time?</Text>
             <Button  
-                buttonStyle={{backgroundColor: colorWhite, padding:10, borderWidth:2,borderColor: colorGreen , height:50,}} 
+                buttonStyle={{backgroundColor: colorWhite, padding:10, borderWidth:2,borderColor: colorGreen , height:50}} 
                 containerStyle={styles.btn1} title="Sign up" type="outline"
                 titleStyle={{color:colorGreen}} onPress={() => navigation.navigate('Register')}/>
-            <View style={{display:'flex', flexDirection:'row', borderTopWidth: 1,borderTopColor: colorblue, paddingVertical:30, marginTop:30}}>
+            <View style={{display:'flex', flexDirection:'row', borderTopWidth: 1,borderTopColor: colorDarkblue, paddingVertical:30, marginTop:30}}>
                 <View style={{display:'flex', flexDirection:'row'}}>
                 <Button buttonStyle={{backgroundColor:colorLightblue, 
                         width:50, height:50, borderWidth:1, borderColor:colorblue,
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     },
     btn1:{
         width:"95%",
-        marginBottom:10,
+        marginBottom:0,
     },
     input:{
         borderStyle:"solid",

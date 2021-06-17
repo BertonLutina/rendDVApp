@@ -8,6 +8,7 @@ import EventListView from '../screens/Views/EventListView';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 import ContactListview from '../screens/Views/ContactListview';
 import { colorDarkGreen, colorGreen, colorLightGreen, colorLightOrange } from '../constants/Colors';
+import GroepsChatListView from '../screens/Views/GroepsChatListView';
 
 
 
@@ -16,7 +17,7 @@ const Tab = createMaterialTopTabNavigator();
 const TopNav = () => {
     return (
     <Tab.Navigator
-        initialRouteName="Contact"
+        initialRouteName="Chat"
         tabBarOptions={{
         activeTintColor: '#fff',
         indicatorStyle : { backgroundColor:'#ffffff' },
@@ -28,7 +29,7 @@ const TopNav = () => {
     >
       <Tab.Screen
         name="Chat"
-        component={ChatListView}
+        component={GroepsChatListView}
         options={{tabBarIcon: () => <Icon name="forum" color={"white"}/>,
                   tabBarLabel: () => null }}
       />
@@ -42,12 +43,6 @@ const TopNav = () => {
         name="Event"
         component={EventListView}
         options={{tabBarIcon: () => <Icon name="date-range" color={"white"}/>,
-                  tabBarLabel: () => null }}
-      />
-      <Tab.Screen
-        name="Contact"
-        component={ContactListview}
-        options={{tabBarIcon: () => <Icon name="contacts" color={"white"}/>,
                   tabBarLabel: () => null }}
       />
     </Tab.Navigator>

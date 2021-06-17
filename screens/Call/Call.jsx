@@ -1,28 +1,54 @@
 import iconSet from '@expo/vector-icons/build/FontAwesome5'
+import { LinearGradient } from 'expo-linear-gradient'
 import moment from 'moment'
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { ListItem,Avatar,Icon} from 'react-native-elements'
-import { colorblue, colorGreen, colorOrange, colorRose, colorYello } from '../../constants/Colors'
+import {  colorGreen, colorRose,colorDarkGreen, colorLightGreen, colorGrey, colorDarkGrey, colorWhite, selectedBackgroundColor } from '../../constants/Colors'
 
-const Call = ({name, id, date,message, active, photo}) => {
+
+
+const Call = ({name, date,photo, selected}) => {
+    const Naam = (name ? name : 'Geen Naam');
     return (
-        <ListItem bottomDivider>
-             <Avatar rounded title={name} source={ photo && { uri: photo }} size="medium" />
-            <ListItem.Content style={styles.content}>
-                <ListItem.Title style={{fontWeight:"bold", fontSize:16}}>{name}</ListItem.Title>
-                <ListItem.Subtitle style={{fontSize:14,fontStyle:"italic", fontWeight:"bold"}}>
-                    <Icon name="phone-missed" color={colorRose} iconStyle={{fontSize:22}}/> 
-                    <Icon name="wifi-calling" color={colorGreen} iconStyle={{fontSize:22}}/> 
-                </ListItem.Subtitle>
-            </ListItem.Content>
-            <View>
-                <Text style={{fontSize:11, textAlign:"right"}}>
-                    {moment().set({D:date}).format("DD/MM/YYYY")}
-                </Text>
+        <View style={{ display:'flex',
+        backgroundColor:selected ? selectedBackgroundColor :colorWhite , flexDirection:'row',
+        elevation:1,
+        borderWidth:1, borderRadius:10, borderColor:selected ? colorLightGreen : colorWhite,
+        marginHorizontal:7, marginVertical:2}}>
+        {photo && <Avatar containerStyle={{marginVertical:10, marginHorizontal:10}} rounded title={Naam} source={{ uri: photo }} size="medium" /> ||
+        <View style={{height:50,width:50, display: 'flex', justifyContent: 'center' , borderRadius:50, marginVertical:10, marginHorizontal:10}}>
+        <LinearGradient
+              colors={[colorDarkGreen, colorGreen]}
+              style={styles.background}
+          />
+       <Text style={{color:"white", fontSize:18, textAlign:'center'}}>{Naam.split(" ")[0].charAt(0)}{(Naam.split(" ")[1])&&Naam.split(" ")[1].charAt(0)}</Text>
+       </View> 
+        }
+            <View style={styles.content}>
+                <View style={{marginTop:15, flexDirection:'row'}}>
+                    <View style={{flex:1}}>
+                        <Text style={{fontWeight:'700', fontSize:15, color:colorDarkGrey}}>{Naam}</Text>
+                        <Text style={{fontSize:16,fontStyle:"italic", fontWeight:"bold"}}>
+                            <Icon name="phone-missed" color={colorRose} iconStyle={{fontSize:22}}/> 
+                            <Icon name="wifi-calling" color={colorGreen} iconStyle={{fontSize:22}}/> 
+                        </Text>
+                    </View>
+                    <View>
+                        <Text style={{fontSize:11, textAlign:"right", marginRight:10}}>
+                            {moment().set({D:date}).format("DD/MM/YYYY")}
+                        </Text>
+                    </View>
+                    
+                </View>
+                <View style={{fontSize:14,fontStyle:"italic",
+                    backgroundColor:"white", flexDirection:'row',width:"auto",  
+                    justifyContent:"space-between",fontWeight:"bold", marginBottom:15}}>
             </View>
+            </View>
+            
            
-        </ListItem>
+        </View>
     )
 }
 
@@ -30,6 +56,18 @@ export default Call
 
 const styles = StyleSheet.create({
     content:{
-        padding:0
-    }
+        padding:0,
+        flex:1
+    },
+    date:{
+        padding:0,
+    },
+    background: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        height:50,width:50,
+        borderRadius:25
+      },
 })

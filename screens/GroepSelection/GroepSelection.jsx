@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import {Avatar,Icon} from 'react-native-elements'
 import {colorDarkGreen, colorDarkGrey, colorGreen, colorGrey,colorWhite, selectedBackgroundColor } from '../../constants/Colors'
 
-const Contact = ({name,selected, photo}) => {
+const GroepSelection = ({name,selected, photo}) => {
     const Naam = (name ? name : 'Geen Naam');
     return (
         <View style={{ display:'flex',
@@ -26,7 +26,7 @@ const Contact = ({name,selected, photo}) => {
                 
                 </View>
                 
-                <View style={{fontSize:14,fontStyle:"italic",
+                {/* <View style={{fontSize:14,fontStyle:"italic",
                     backgroundColor:selected ? "transparent" :"white", flexDirection:'row',width:"auto",  
                     justifyContent:"space-between",fontWeight:"bold", marginBottom:15}}>
                     <Text style={{backgroundColor:selected ? "transparent" :"white"}}>
@@ -34,13 +34,13 @@ const Contact = ({name,selected, photo}) => {
                         <Icon  name="local-phone" color={"#241d1d"} iconStyle={{fontSize:22}}/> 
                         <Icon name="today" color={"#241d1d"} iconStyle={{fontSize:22}}/> 
                     </Text>
-                </View>
+                </View> */}
             </View>
         </View>
     )
 }
 
-export default memo(Contact)
+export default memo(GroepSelection)
 
 const styles = StyleSheet.create({
     container:{
