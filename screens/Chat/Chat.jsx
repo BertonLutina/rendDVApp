@@ -2,18 +2,17 @@ import { LinearGradient } from 'expo-linear-gradient'
 import moment from 'moment'
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { ListItem,Avatar,Icon,Button} from 'react-native-elements'
-import { colorGreen, colorRose,colorDarkGreen,colorGrey, colorLightGreen, colorDarkGrey, colorWhite, selectedBackgroundColor, colorLightRose, colorLightblue } from '../../constants/Colors'
+import { Avatar,Icon,Button} from 'react-native-elements'
+import { colorGreen, colorRose,colorDarkGreen,colorDarkGrey, colorWhite, selectedBackgroundColor,colorGreenIcon } from '../../constants/Colors'
 
-const Chat = ({name, id, date,message, selected, photo}) => {
+const Chat = ({name, id, date,message, selected, photo, plan, seen}) => {
     const Naam = (name ? name : 'Geen Naam');
     return (
         <View style={{ display:'flex',
         elevation: 1,
         backgroundColor: selected ? selectedBackgroundColor : colorWhite , flexDirection:'row',
-        borderWidth:selected ? 1: 0.5, borderRadius:10, borderColor:selected ? colorGreen : colorWhite,
-        marginHorizontal:7, marginVertical:3}}>
-        {photo && <Avatar containerStyle={{marginVertical:10, marginHorizontal:10}} rounded title={Naam} source={{ uri: photo }} size="medium" /> ||
+        }}>
+        {photo && <Avatar containerStyle={{margin:15}} rounded title={Naam} source={{ uri: photo }} size="medium" /> ||
         <View style={{height:50,width:50, display: 'flex', justifyContent: 'center' , borderRadius:50, marginVertical:10, marginHorizontal:10}}>
         <LinearGradient
               colors={[colorDarkGreen, colorGreen]}
@@ -32,14 +31,23 @@ const Chat = ({name, id, date,message, selected, photo}) => {
                     </View>
                     <View>
                         <Text style={{fontSize:11, textAlign:"right", marginRight:10,color:"grey"}}>
-                            {moment().set({D:date}).format("DD/MM/YYYY")}
+                            {date}
                         </Text >
                         <Text style={{fontSize:11, textAlign:"right", marginRight:10}}>
-                                <Button buttonStyle={{padding:2}} icon={<Icon  name="today" color={"black"} iconStyle={{fontSize:26}}/>} type="clear" />
-                                <Button buttonStyle={{padding:2}} icon={<Icon name="event-available" color={colorGreen} iconStyle={{fontSize:26}}/>} type="clear" />
+                            {
+                                plan == 1 ? 
+                                <Button buttonStyle={{padding:2}} icon={<Icon  name="today" color={"black"} iconStyle={{fontSize:26}}/>} type="clear" /> :
+                                plan == 2 ?
+                                <Button buttonStyle={{padding:2}} icon={<Icon name="event-available" color={colorGreenIcon} iconStyle={{fontSize:26}}/>} type="clear" /> :
                                 <Button buttonStyle={{padding:2}} icon={<Icon name="event-busy" color={colorRose} iconStyle={{fontSize:26}}/>} type="clear" />
-                                <Icon name="done" color={"lightgrey"} iconStyle={{fontSize:26}}/>
-                                <Icon name="done-all" color={"lightgrey"} iconStyle={{fontSize:26}}/>
+                            }
+                              {
+                                  seen == 1 ? 
+                                    <Icon style={{paddingVertical:6}} name="done" color={"lightgrey"} iconStyle={{fontSize:20}}/> :
+                                  seen == 2 ? 
+                                    <Icon style={{paddingVertical:6}} name="done-all" color={"lightgrey"} iconStyle={{fontSize:20}}/> :
+                                    <Icon style={{paddingVertical:6}} name="north-east" color={colorGreenIcon} iconStyle={{fontSize:20}}/>
+                              }  
                                 </Text>
                     </View>
                     

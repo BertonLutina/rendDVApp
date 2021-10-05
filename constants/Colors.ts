@@ -6,7 +6,8 @@ export const colorBlack = '#000';
 
 export const colorRose = '#CA1551';
 export const colorOrange = '#FB4D3D';
-export const colorGreen = '#03CEA4';
+export const colorGreen = '#49B69B'; //#03CEA4
+export const colorGreenIcon = '#03CEA4'; //#03CEA4
 export const colorblue = '#24a0ed';
 export const colorYello = '#EAC435';
 export const colorText = '#211f1f';

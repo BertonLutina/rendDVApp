@@ -7,8 +7,9 @@ import { ScrollView, StyleSheet, Text, View, TextInput, Alert } from 'react-nati
 import { Icon, Button, Avatar, Input} from 'react-native-elements'
 import SearchBar from 'react-native-elements/dist/searchbar/SearchBar-android'
 import { FlatList } from 'react-native-gesture-handler'
-import { backGroundColor, colorDarkblue, colorDarkGreen, colorDarkGrey, colorGreen, colorLightGreen, colorLightGrey, colorRose, colorWhite } from '../../constants/Colors'
+import { backGroundColor, colorDarkblue, colorDarkGreen, colorDarkGrey, colorDarkRose, colorGreen, colorLightGreen, colorLightGrey, colorLightRose, colorRose, colorText, colorWhite } from '../../constants/Colors'
 import { Image } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const ChatInput = ({text, ChangeText, addChat,pickFromGallery,pickFromCamera}) => {
     return(
@@ -31,15 +32,24 @@ const ChatInput = ({text, ChangeText, addChat,pickFromGallery,pickFromCamera}) =
 
 const ChatHeader = ({item}) => {
     let navigation = useNavigation();
+    const Naam = (item.username ? item.username : 'Geen Naam');
     return(
         <View >
             <View style={{flexDirection:"row", alignItems:"center", justifyContent:"space-between", backgroundColor:colorGreen, height:60}}>
                 <Button  containerStyle={{flex:1}} type="clear" icon={<Icon name="arrow-back" color="white"/>} onPress={() => navigation.goBack()}/>
                 <Button containerStyle={{flex:1}} type="clear" icon={<Icon name="event" color="white"/>}/>
                 <Button containerStyle={{flex:1}} type="clear" icon={<Icon name="wifi-calling" color="white"/>}/>
-                <Text style={{flex:5, fontSize:18, color:"white"}}>{item.name}</Text>
-                <Avatar source={{uri : item.image.uri}} 
-                rounded={true} size={45} title={item.name} containerStyle={{borderColor:colorWhite, borderWidth:2, marginRight:5}} />
+                <Text style={{flex:5, fontSize:15, color:"white"}}>{Naam}</Text>
+                {item.photo && <Avatar source={{uri : item.photo}} 
+                    rounded={true} size={45} title={Naam} containerStyle={{borderColor:colorWhite, borderWidth:2, marginRight:5}} /> ||
+                    <View style={{height:50,width:50, borderRadius:50,display: 'flex', justifyContent: 'center', marginVertical:10, marginHorizontal:10}}>
+                    <LinearGradient
+                        colors={[colorDarkGreen, colorGreen]}
+                        style={styles.circle}
+                    />
+                <Text style={{color:"white", fontSize:18, textAlign:'center'}}>{Naam.split(" ")[0].charAt(0)}{(Naam.split(" ")[1])&&Naam.split(" ")[1].charAt(0)}</Text>
+                </View> 
+                    }
             </View>
             <View style={{backgroundColor:colorGreen, padding:4,}}>
                 <Text style={{textAlign:'center', fontSize:12, color:colorWhite}}>Verbonden om: 10/06/2021</Text>
@@ -47,8 +57,6 @@ const ChatHeader = ({item}) => {
             </View>
     )
 }
-
-
 
 const ChatView = ({route,navigation}) => {
     const [inputs, setInputs] = useState([]);
@@ -77,7 +85,7 @@ const ChatView = ({route,navigation}) => {
                 aspect:[1,1],
                 quality:0.5
               });
-              console.log("gallery: ",data);
+        
               if(!data.cancelled){
                 setInputs(prevValues => [...prevValues,{id:(inputs.length + 1),times:moment().locale('nl-be').format('h:mm:ss'), image: data.uri,
                 message:"", imagecancelled: data.cancelled, height:data.height , width:data.width}]);
@@ -98,7 +106,7 @@ const ChatView = ({route,navigation}) => {
                 aspect:[1,1],
                 quality:0.5
               });
-              console.log("camera: ",data);
+         
             }else{
               Alert.alert("you to get permissions");
             }
@@ -109,8 +117,9 @@ const ChatView = ({route,navigation}) => {
 const User = ({times, message, id, image,imagecancelled, height, width}) => {
     return(
         <View key={id} style={{flexDirection:"row", justifyContent:"flex-end", padding:10}}>
-            <View style={{backgroundColor:colorGreen, borderColor:colorGreen, borderWidth:1, borderRadius:25,width:"60%"}}>
-                <Text style={{textAlign:'center', fontSize:12, color:colorWhite,padding:4, backgroundColor:colorLightGreen, borderTopRightRadius:25 , borderTopLeftRadius:25 }}>{times}</Text>
+            <View style={{backgroundColor:colorGreen, borderColor:colorGreen, borderWidth:1, borderRadius:10,width:"60%"}}>
+                <Text style={{textAlign:'center', fontSize:12, color:colorWhite,padding:4, backgroundColor:colorLightGreen, 
+                borderTopRightRadius:10 , borderTopLeftRadius:10 }}>{times}</Text>
                 {
                         (image != "")&&<Image source={{uri: image}} style={{ width: width/3, height: height/3 }}/>
                     }
@@ -124,14 +133,14 @@ const User = ({times, message, id, image,imagecancelled, height, width}) => {
 
 const Contact = ({times, message, id, image,imagecancelled, height, width}) => {
         return(
-        <View key={id} style={{flexDirection:"row", justifyContent:"flex-start",padding:10}}>
+        <View key={id} style={{flexDirection:"row", justifyContent:"flex-start",padding:10, elevation:1}}>
                 <View style={{backgroundColor:colorWhite,borderColor:colorGreen, borderWidth:1, height:10,width:10, borderRadius:25}}>
                 </View>
-                <View style={{backgroundColor:colorWhite, borderColor:colorGreen, borderWidth:1, borderRadius:25,minWidth:"60%"}}>
+                <View style={{backgroundColor:colorWhite, borderColor:colorGreen, borderWidth:1, borderRadius:10,minWidth:"60%"}}>
                     <Text style={{textAlign:'center', fontSize:12, color:colorDarkGrey ,padding:4, 
-                    backgroundColor:colorLightGrey, borderTopRightRadius:25 , borderTopLeftRadius:25}}>{times}</Text>
+                        backgroundColor:colorLightGrey, borderTopRightRadius:10 , borderTopLeftRadius:10}}>{times}</Text>
                     {
-                        (image != "")&&<Image source={{uri: image}} style={{ width: width/10, height:height/10}}/> 
+                        (image != "")&&<Image source={{uri: image}} style={{ width: width/8, height:height/8}}/> 
                     }
                     <Text style={{textAlign:'left', fontSize:12, color:colorDarkGrey ,padding:10,}}>{message}</Text>
                 </View>
@@ -146,21 +155,24 @@ function ChangeText(e) {
 function addChat() {
     moment.locale("nl-be");
     if(text){
-        setInputs(prevValues => [...prevValues,{id:(inputs.length + 1),times:moment().format('h:mm:ss'), image:"",
+        setInputs(prevValues => [...prevValues,{id:(inputs.length + 1),times:moment().format('hh:mm:ss'), image:"",
         message:text, imagecancelled: false}]);
     settext("");}
 }
    const {person} = route.params;
     return (
-        <View style={{flex:1, backgroundColor:backGroundColor}}>
+        <View style={{flex:1, backgroundColor:colorWhite}}>
             <ChatHeader item={person}/>
             {
-                inputs&&(<FlatList
+                inputs.length != 0 ? <FlatList
                             data={inputs}
                             keyboardShouldPersistTaps="never"
                             renderItem={renderItem}
-                            keyExtractor={item => item.id}
-                            />) || (<Text>Start uw chat</Text>)
+                            keyExtractor={item => item.id.toString()}
+                            /> : <View style={{flex:1, alignItems:"center"}}>
+                                    <Text style={{borderRadius:10, marginVertical:10,
+                                                    backgroundColor:colorLightGrey, padding:10, 
+                                                color:colorDarkGrey}}>Start uw chat</Text></View>
             }
           
             <ChatInput text={text} ChangeText={ChangeText} addChat={addChat} 
@@ -171,4 +183,14 @@ function addChat() {
 
 export default ChatView
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    circle: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        height:50,
+        width:50,
+        borderRadius:25,
+      },
+})

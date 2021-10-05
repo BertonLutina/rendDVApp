@@ -3,29 +3,33 @@ import React, { useState } from 'react'
 import {StyleSheet, Text, View } from 'react-native'
 import { Button, Icon } from 'react-native-elements'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
-import { colorDarkGreen, colorDarkGrey, colorGreen, colorGrey, colorLightGreen, colorLightGrey, colorOrange, colorRose, colorWhite } from '../constants/Colors'
+import { colorDarkGreen, colorDarkGrey, colorGreen, colorGreenIcon, colorGrey, colorLightGreen, colorLightGrey, colorOrange, colorRose, colorWhite } from '../constants/Colors'
 
 
-const Accordian = ({List,name}) => {
+const Accordian = ({List,name,iconname}) => {
     const [state, setstate] = useState({checked:false})
 
-    function Update() {
+    function Expanded() {
         setstate({checked:!state.checked});
     }
 
     return (
         <View style={{marginHorizontal:1, marginVertical:0,
-            borderBottomColor:colorLightGrey, borderBottomWidth:0,
+            borderTopColor:colorLightGrey, borderTopWidth:0.8,
             borderRadius:4,padding:1}}>
-                   <LinearGradient colors={[colorWhite,"white"]} >
-            <TouchableWithoutFeedback 
+            <TouchableWithoutFeedback onPress={() => Expanded()}>
+                   <LinearGradient colors={[colorWhite,"white"]}>
+            
+            <View 
                 style={{flexDirection:"row",justifyContent:"space-between",alignItems:"center",height:50,paddingHorizontal:10,
-                marginHorizontal:2}} onPress={() => Update() }>
+                marginHorizontal:2, borderBottomWidth:0.5, borderBottomColor:colorGrey}} >
+                <Icon name={iconname? iconname : "person"} color={colorGreenIcon}/>
           
-                <Text style={{color:colorDarkGrey, fontWeight:"600", fontSize:16}}>{name}</Text><Icon color={colorGreen} size={34} name={(state.checked) ? "arrow-drop-down" : "arrow-right"}/>
+                <Text style={{color:colorDarkGrey,flex:2, fontWeight:"600",marginLeft:10, fontSize:16}}>{name}</Text><Icon color={colorGreenIcon} size={34} name={(state.checked) ? "arrow-drop-down" : "arrow-right"}/>
    
-            </TouchableWithoutFeedback>
+            </View>
             </LinearGradient>
+            </TouchableWithoutFeedback>
             {
                 state.checked&&List
             }

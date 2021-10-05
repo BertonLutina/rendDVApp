@@ -4,19 +4,17 @@ import moment from 'moment'
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { ListItem,Avatar,Icon} from 'react-native-elements'
-import {  colorGreen, colorRose,colorDarkGreen, colorLightGreen, colorGrey, colorDarkGrey, colorWhite, selectedBackgroundColor } from '../../constants/Colors'
+import {  colorGreen, colorRose,colorDarkGreen, colorLightGreen, colorGrey, colorDarkGrey, colorWhite, selectedBackgroundColor, colorGreenIcon } from '../../constants/Colors'
 
 
 
-const Call = ({name, date,photo, selected}) => {
+const Call = ({name, date,photo, selected,call}) => {
     const Naam = (name ? name : 'Geen Naam');
     return (
         <View style={{ display:'flex',
-        backgroundColor:selected ? selectedBackgroundColor :colorWhite , flexDirection:'row',
-        elevation:1,
-        borderWidth:1, borderRadius:10, borderColor:selected ? colorLightGreen : colorWhite,
-        marginHorizontal:7, marginVertical:2}}>
-        {photo && <Avatar containerStyle={{marginVertical:10, marginHorizontal:10}} rounded title={Naam} source={{ uri: photo }} size="medium" /> ||
+        backgroundColor:selected ? selectedBackgroundColor :colorWhite, borderLeftColor:colorGreen , flexDirection:'row',
+        elevation:1}}>
+        {photo && <Avatar containerStyle={{margin:15, backgroundColor:colorLightGreen}} rounded title={Naam} source={{ uri: photo }} size="medium" /> ||
         <View style={{height:50,width:50, display: 'flex', justifyContent: 'center' , borderRadius:50, marginVertical:10, marginHorizontal:10}}>
         <LinearGradient
               colors={[colorDarkGreen, colorGreen]}
@@ -30,8 +28,10 @@ const Call = ({name, date,photo, selected}) => {
                     <View style={{flex:1}}>
                         <Text style={{fontWeight:'700', fontSize:15, color:colorDarkGrey}}>{Naam}</Text>
                         <Text style={{fontSize:16,fontStyle:"italic", fontWeight:"bold"}}>
-                            <Icon name="phone-missed" color={colorRose} iconStyle={{fontSize:22}}/> 
-                            <Icon name="wifi-calling" color={colorGreen} iconStyle={{fontSize:22}}/> 
+                            {
+                                call == 1 ? <Icon name="phone-missed" color={colorRose} iconStyle={{fontSize:22}}/> :
+                                <Icon name="wifi-calling" color={colorGreenIcon} iconStyle={{fontSize:22}}/> 
+                            }
                         </Text>
                     </View>
                     <View>

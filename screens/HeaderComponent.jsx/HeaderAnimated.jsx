@@ -10,7 +10,7 @@ import { colorDarkGreen, colorDarkGrey, colorGreen, colorGrey, colorLightGreen, 
 
 
 
-const HeaderAnimated = ({text,filterArray,changeView}) => {
+const HeaderAnimated = ({text,filterArray,changeView, actionView, placeholder}) => {
     const navigation = useNavigation();
 
    
@@ -24,13 +24,13 @@ const HeaderAnimated = ({text,filterArray,changeView}) => {
               inputContainerStyle={{backgroundColor:colorGreen,height:40, borderRadius:10}}
               leftIconContainerStyle={{color:colorWhite}}
               inputStyle={{color:colorWhite}}
-              placeholder="Contacts"
+              placeholder={placeholder ? placeholder : "Search"}
               placeholderTextColor={colorWhite}
               containerStyle={{backgroundColor:"transparent", width:"70%"}}/>
               <Button icon={<Icon name="sensor-window" color={colorGreen} iconStyle={{fontSize: 26}} />} onPress={changeView}  type="clear"/>
                 {/* <Button icon={<Icon name="today" color="white" iconStyle={{fontSize: 26}} />}  type="clear"/> */}
                 <Button icon={<Icon name="contacts" color={colorGreen} iconStyle={{fontSize: 26}}/>} type="clear" onPress={() => navigation.navigate('Contacts')}/>
-                <Button icon={<Icon name="more-vert" color={colorGreen} iconStyle={{fontSize: 26}}/>} type="clear"/>
+                <Button icon={<Icon name="more-vert" color={colorGreen} iconStyle={{fontSize: 26}}/>} type="clear" onPress={actionView}/>
             </View>
     </View>
     )

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import ChatListView from '../screens/Views/ChatListView';
@@ -9,12 +9,16 @@ import { Icon } from 'react-native-elements/dist/icons/Icon';
 import ContactListview from '../screens/Views/ContactListview';
 import { colorDarkGreen, colorGreen, colorLightGreen, colorLightOrange } from '../constants/Colors';
 import GroepsChatListView from '../screens/Views/GroepsChatListView';
+import * as Contacts from 'expo-contacts';
+import { firestore } from '../auth/firebase';
 
 
 
 const Tab = createMaterialTopTabNavigator();
 
-const TopNav = () => {
+
+const TopNav = ({users,group, person}) => {
+
     return (
     <Tab.Navigator
         initialRouteName="Chat"
@@ -29,10 +33,21 @@ const TopNav = () => {
     >
       <Tab.Screen
         name="Chat"
-        component={GroepsChatListView}
+        children={() =>{
+          return(
+            <ChatListView users={users} group={group}/>
+          )
+         }}
+        
         options={{tabBarIcon: () => <Icon name="forum" color={"white"}/>,
                   tabBarLabel: () => null }}
       />
+      {/* <Tab.Screen
+        name="GroepChat"
+        component={GroepsChatListView}
+        options={{tabBarIcon: () => <Icon name="forum" color={"white"}/>,
+                  tabBarLabel: () => null }}
+      /> */}
       <Tab.Screen
         name="Call"
         component={CallListView}
