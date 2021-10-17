@@ -1,14 +1,17 @@
+import { useNavigation } from '@react-navigation/core'
 import { LinearGradient } from 'expo-linear-gradient'
 import moment from 'moment'
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { Avatar,Icon,Button} from 'react-native-elements'
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import { colorGreen, colorRose,colorDarkGreen,colorDarkGrey, colorWhite, selectedBackgroundColor,colorGreenIcon } from '../../constants/Colors'
 
-const Chat = ({name, id, date,message, selected, photo, plan, seen}) => {
+const Chat = ({name, id, date,message, selected, photo, plan, seen, onPress}) => {
+    const navigation = useNavigation()
     const Naam = (name ? name : 'Geen Naam');
     return (
-        <View style={{ display:'flex',
+        <View key={id} style={{ display:'flex',
         elevation: 1,
         backgroundColor: selected ? selectedBackgroundColor : colorWhite , flexDirection:'row',
         }}>
@@ -24,19 +27,22 @@ const Chat = ({name, id, date,message, selected, photo, plan, seen}) => {
         <View style={styles.content}>
                 <View style={{marginVertical:15, flexDirection:'row'}}>
                     <View style={{flex:1}}>
+                    <TouchableWithoutFeedback  onPress={onPress}>
                         <Text style={{fontWeight:'700', fontSize:15, color:colorDarkGrey}}>{Naam}</Text>
                         <Text style={{fontSize:14,fontStyle:"italic", fontWeight:"500", color:"grey"}}>
                             "{message}"
                         </Text>
+                        </TouchableWithoutFeedback>
                     </View>
                     <View>
                         <Text style={{fontSize:11, textAlign:"right", marginRight:10,color:"grey"}}>
                             {date}
                         </Text >
-                        <Text style={{fontSize:11, textAlign:"right", marginRight:10}}>
+                        <Text style={{fontSize:11, textAlign:"right", marginRight:10}} onPress={(e) => e.preventDefault()}>
                             {
                                 plan == 1 ? 
-                                <Button buttonStyle={{padding:2}} icon={<Icon  name="today" color={"black"} iconStyle={{fontSize:26}}/>} type="clear" /> :
+                                <Button buttonStyle={{padding:2}} icon={<Icon  name="today" color={"black"} iconStyle={{fontSize:26}}/>} type="clear"  
+                                onPress={() => navigation.navigate("EventCreater",{name, id, date, photo, plan, seen})} /> :
                                 plan == 2 ?
                                 <Button buttonStyle={{padding:2}} icon={<Icon name="event-available" color={colorGreenIcon} iconStyle={{fontSize:26}}/>} type="clear" /> :
                                 <Button buttonStyle={{padding:2}} icon={<Icon name="event-busy" color={colorRose} iconStyle={{fontSize:26}}/>} type="clear" />

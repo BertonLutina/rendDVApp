@@ -1,25 +1,21 @@
-import React, { useState,useEffect, createRef } from 'react';
-import { Dimensions, StyleSheet, View ,Text, Alert} from 'react-native'
-import {FlatList, TouchableWithoutFeedback} from 'react-native-gesture-handler';
-import ActionSheet from "react-native-actions-sheet";
-import * as Contacts from 'expo-contacts';
+import React, { useState,useEffect, createRef,useMemo,memo,useCallback } from 'react';
+import { StyleSheet, View ,Text, Alert} from 'react-native'
+import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import Chat from '../Chat/Chat.jsx';
-import {colorGreenIcon, colorLightGreen, colorWhite } from '../../constants/Colors';
-import { Icon, Button,ListItem } from 'react-native-elements';
+import {colorGreen, colorGreenIcon, colorLightGreen, colorWhite } from '../../constants/Colors';
+import { Icon, Button, ListItem} from 'react-native-elements';
 import { launchCameraAsync, MediaTypeOptions } from 'expo-image-picker';
 import { Camera } from 'expo-camera';
-import Accordian from '../../components/Accordian.jsx';
-import HeaderAnimated from '../HeaderComponent.jsx/HeaderAnimated.jsx';
 import { useNavigation } from '@react-navigation/native';
-import { readChatterAll } from '../../components/CRUD/crud.js';
-import { firestore } from '../../auth/firebase.js';
+import { firestore, _firebase } from '../../auth/firebase.js';
 import ChatviewUserGroep from './ChatVieuws/ChatviewUserGroep.jsx';
 import ChatviewGroep from './ChatVieuws/ChatviewGroep.jsx';
 import ChatviewUser from './ChatVieuws/ChatviewUser.jsx';
 import GroepsChat from '../GroepsChat/GroepsChat.jsx';
+import ActionSheet from 'react-native-actions-sheet'
+import { getChatterId, getGroupsId } from '../../constants/constantFunction.js';
 
 
-let persons = [];
 
 const pickFromCamera = async () => {
   const {granted} = await Camera.requestPermissionsAsync();
@@ -39,7 +35,7 @@ const pickFromCamera = async () => {
 const actionSheetRef = createRef();
 
 
-const ChatListView = ({route, users,group}) => {
+const ChatListView = ({route, users,persony,group, view:viewp}) => {
   const [person, setPerson] = useState(users);
   const [groups, setGroups] = useState(group);
   const [personfilterd, setPersonfilterd] = useState(users);
@@ -48,21 +44,27 @@ const ChatListView = ({route, users,group}) => {
   const [view, setView] = useState(1);
   const navigation = useNavigation();
 
-  function filterArray(text){
+  const filterArray = useCallback((text) =>{
     let search = text.toLowerCase();
     let array = person.filter(obj => (obj == undefined) ? "" : obj.username.toLowerCase().includes(search));
     setPersonfilterd(users);
     settext(text);
-  }
+  },[settext, setPersonfilterd]);
 
-  function selected(item) {
-    //setSelectedId(item.id);
-    navigation.navigate("ChatView", {
-      person: item
-    });
-  }
 
-  function changeView() {
+  const selected = useCallback((item,num) => {
+    if(num == 0)
+      navigation.navigate("ChatView", {
+        person: item
+      });
+    else if(num == 1){
+      navigation.navigate("GroepsView", {
+        person: item
+      });
+    }
+  },[navigation]);
+
+  const changeView = useCallback(() => {
     let screen = view;
         screen++;
     if(screen < 4){
@@ -70,63 +72,82 @@ const ChatListView = ({route, users,group}) => {
     }else{
       setView(1);
     }
-  }
+  }, [view]);
 
   useEffect(() => {
-    /* setPersonfilterd(users);
-    setPerson(users); */
-     let unmouted = false;
-     let unmouted2 = false;
-      const unsubscribe = firestore.collection('Chatter').onSnapshot((snapshot) => {
-        if(!unmouted){
-          setPersonfilterd(snapshot.docs.map(doc => doc.data()));
-          setPerson(snapshot.docs.map(doc => doc.data()));
-        }
-        
-        return () => {
-          unmouted = true;
-        }
-      });
+    let unmouted = false;
+    let unmouted2 = false;
+     _firebase.auth().onAuthStateChanged(function(user) {
+      setView(viewp||1)
+      if (user) {
+        var p_uid = getChatterId(user.uid);
+        var g_uid = getGroupsId(user.uid);
+          firestore.collection(p_uid).onSnapshot((snapshot) => {
+            if(!unmouted){
+              setPersonfilterd(snapshot.docs.map(doc => doc.data()));
+              setPerson(snapshot.docs.map(doc => doc.data()));
+            }
+            return () => {
+              unmouted = true;
+            }
+          });
 
-      const unsubscribegroup = firestore.collection('GroupsChatter').onSnapshot((snapshot) => {
-        if(!unmouted2)
-        setGroups(snapshot.docs.map(doc => doc.data()));
-      return () => {
-        unmouted2 = true;
+          firestore.collection(g_uid).onSnapshot((snapshot) => {
+            if(!unmouted2)
+            setGroups(snapshot.docs.map(doc => doc.data()));
+            return () => {
+            unmouted2 = true;
+          }
+          });
+
+      } else {
+        Alert.alert("LogOut","You're LogOut please Login Again");
       }
-    }); 
-  },[]);
 
-  const renderItem = ({ item }) => {
+      
+    });
+      
+  },[viewp]);
+
+  const renderItem = useMemo(() => { return ({ item }) => {
   const checked = (item.id == selectedId) ? true : false;
+ // var p_uid = getChatterId(_firebase.auth().currentUser.uid);
+  console.log(item.id);
+
+  /* let lastchat = firestore.collection(p_uid).doc(item.id).collection("messages").limit(1).onSnapshot((data) => 
+  console.log(data.size)
+  ); */
+
     return (
-        <TouchableWithoutFeedback onPress={() => selected(item)}>
+        <TouchableWithoutFeedback>
             <Chat 
-                name={item.username} 
+                name={item.name} 
                 id={item.id} 
                 date={item.date}
                 plan={1}
+                onPress={() => selected(item,0)}
                 selected={checked}
                 message={"Hallo dit is een test hall yes".substring(0,20)}
                 photo ={item.photo}/>
         </TouchableWithoutFeedback> 
             );
-  };
+  }});
 
-  const renderItemGroup = ({ item }) => {
+  const renderItemGroup = useMemo(() => { return({ item }) => {
     const checked = (item.id == selectedId) ? true : false;
-    console.log(item)
       return (
-          <TouchableWithoutFeedback onPress={() => selected(item)}>
+          <TouchableWithoutFeedback >
               <GroepsChat 
+                  id={item.id}
                   name={item.groupname} 
                   plan={1}
+                  onPress={() => selected(item,1)}
                   selected={checked}
                   message={"Hallo dit is een test hall yes".substring(0,20)}
                   photo ={item.photo}/>
           </TouchableWithoutFeedback> 
               );
-    };
+    }});
 
   const renderSeparator = () => {
     return (
@@ -142,7 +163,7 @@ const ChatListView = ({route, users,group}) => {
 
  
 
-  if (personfilterd.length > 0){
+  if ((personfilterd.length > 0 || groups.length > 0)){
     if(view == 1){
       return (
         <ChatviewUser 
@@ -154,32 +175,49 @@ const ChatListView = ({route, users,group}) => {
       return (
         <ChatviewUserGroep
           person = {personfilterd} group={groups} renderItem={renderItem} renderItemGroup={renderItemGroup} renderSeparator ={renderSeparator} text = {text}
-          selectedId = {selected} filterArray= {filterArray} actionSheetRef ={actionSheetRef} navigation = {navigation}
+          selectedId = {selected} filterArray={filterArray} actionSheetRef ={actionSheetRef} navigation = {navigation}
           changeView = {changeView} pickFromCamera = {pickFromCamera} />
         );
     }else if(view == 3){
       return (
         <ChatviewGroep 
-          person = {groups} renderItem = {renderItemGroup} renderSeparator ={renderSeparator} text = {text}
+          person = {groups} renderItem= {renderItemGroup} renderSeparator ={renderSeparator} text = {text}
           selectedId = {selected} filterArray= {filterArray} actionSheetRef ={actionSheetRef} navigation = {navigation}
           changeView = {changeView} pickFromCamera = {pickFromCamera}
           />);
     }
-  }else{
+    }else{
     return (
     <View style={styles.container}>
         <Button  icon={<Icon name="chat" color={colorWhite} borderRadius={50} iconStyle={{fontSize: 60}}  />} 
           containerStyle={styles.cont_btn_camera_cr} 
           buttonStyle={styles.btn_style_camera_cr}
-          onPress={() => navigation.navigate('NewChat')}/>
-        <View style={styles.cont_btn_camera_cr}>
-          <Text style={{fontSize:18}}>Let's talk...</Text>
+          onPress={() => {actionSheetRef.current?.setModalVisible()}}/>
+        <View style={{backgroundColor:colorGreen,position:"relative",flex:1,justifyContent:"center",alignItems:'center',
+      borderRadius:1,}}>
+          <Text style={{fontSize:18, color:colorWhite}}>Let's talk...</Text>
         </View>
+        <ActionSheet ref={actionSheetRef}>
+          <View>
+            <ListItem bottomDivider onPress={() => navigation.navigate('NewChat')}>
+                <ListItem.Content>
+                  <ListItem.Title>Create new chat</ListItem.Title>
+                </ListItem.Content>
+                <ListItem.Chevron />
+            </ListItem>
+            <ListItem bottomDivider onPress={() => navigation.navigate('NewGroep')}>
+                <ListItem.Content>
+                  <ListItem.Title>Create new groupchat</ListItem.Title>
+                </ListItem.Content>
+                <ListItem.Chevron />
+            </ListItem>
+          </View>
+        </ActionSheet> 
     </View>);
   }
 }
 
-export default ChatListView
+export default memo( ChatListView)
 
 const styles = StyleSheet.create({
     main:{

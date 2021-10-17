@@ -3,12 +3,13 @@ import moment from 'moment'
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { Avatar,Icon,Button} from 'react-native-elements'
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import { colorGreen, colorRose,colorDarkGreen,colorDarkGrey, colorWhite, selectedBackgroundColor,colorGreenIcon, colorDarkOrange } from '../../constants/Colors'
 
-const GroepsChat = ({name, date,message, selected, photo, plan, seen}) => {
+const GroepsChat = ({id, name, date,message, selected, photo, plan, seen,onPress}) => {
     const Naam = (name ? name : 'Geen Naam');
     return (
-        <View style={{ display:'flex',
+        <View key={id} style={{ display:'flex',
         elevation: 1,
         backgroundColor: selected ? selectedBackgroundColor : colorWhite , flexDirection:'row',
         }}>
@@ -24,10 +25,12 @@ const GroepsChat = ({name, date,message, selected, photo, plan, seen}) => {
         <View style={styles.content}>
                 <View style={{marginVertical:15, flexDirection:'row'}}>
                     <View style={{flex:1}}>
-                        <Text style={{fontWeight:'700', fontSize:15, color:colorDarkGrey}}>{Naam}</Text>
-                        <Text style={{fontSize:14,fontStyle:"italic", fontWeight:"500", color:"grey"}}>
-                            "{message}"
-                        </Text>
+                        <TouchableWithoutFeedback onPress={onPress}>
+                            <Text style={{fontWeight:'700', fontSize:15, color:colorDarkGrey}}>{Naam}</Text>
+                            <Text style={{fontSize:14,fontStyle:"italic", fontWeight:"500", color:"grey"}}>
+                                "{message}"
+                            </Text>
+                        </TouchableWithoutFeedback>
                     </View>
                     <View>
                         <Text style={{fontSize:11, textAlign:"right", marginRight:10,color:"grey"}}>

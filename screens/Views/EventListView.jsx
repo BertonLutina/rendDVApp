@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Alert, StyleSheet, Text, View } from 'react-native'
+import { Alert, StyleSheet, Text, View,Modal } from 'react-native'
 import { Agenda} from 'react-native-calendars'
 import { Dimensions } from 'react-native';
 import { buttonPrimaryColor, colorblue, colorGreen, colorOrange, colorRose, colorWhite, colorYello } from '../../constants/Colors';
@@ -9,22 +9,31 @@ import testID from '../Events/testID';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import moment from 'moment';
 import { Button } from 'react-native-elements/dist/buttons/Button';
+import { Pressable } from 'react-native';
+import { getCurrentDateReverse } from '../../constants/constantFunction';
 
 
 
 
 const EventListView = () => {
-    
+    let dateNow = new Date()
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const [items, setItems] = useState({});
+const [userItem, setItem] = useState("");
+const [modalVisible, setModalVisible] = useState(false);
 
 const [times, setTimes] = useState(
 {'2021-07-03':[{name: 'test-1', teller:1,height: Math.max(50, Math.floor(Math.random() * 150)) },
 {name: 'test-2', teller:2,height: Math.max(50, Math.floor(Math.random() * 150)) }],
-'2021-07-04':[{name: 'test-2', teller:1,height: Math.max(50, Math.floor(Math.random() * 150)) }],
+'2021-07-04':[{name: 'test-4', teller:3,height: Math.max(50, Math.floor(Math.random() * 150)) }],
   '2021-07-05':[{name: 'test-3', teller:1,height: Math.max(50, Math.floor(Math.random() * 150)) }]});
+
+  function ShowModal(item) {
+    setItem(item);
+    setModalVisible(true);
+  }
 
 const loadItems = (day) => {
     setTimeout(() => {
@@ -61,7 +70,7 @@ const renderItem = (item) => {
       <TouchableOpacity
         testID={testID.agenda.ITEM}
         style={[styles.item, {maxHeight: 500, flexDirection:"row"}]}
-        onPress={() => Alert.alert(item.name)}
+        onPress={() => ShowModal(item)}
       >
         <Text style={{backgroundColor: color, height:10,width:10, borderRadius:25}}></Text>
         <Text style={{fontSize:14, color:"gray", fontFamily:"notoserif"}}> {item.name}</Text>
@@ -96,10 +105,30 @@ const renderItem = (item) => {
             renderItem={renderItem.bind(this)}
             renderEmptyDate={renderEmptyDate.bind(this)}
             rowHasChanged={rowHasChanged.bind(this)}/> */}
+             <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          Alert.alert("Modal has been closed.");
+          setModalVisible(!modalVisible);
+        }}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>{userItem.name} {JSON.stringify(userItem)}</Text>
+              <Pressable
+                style={[styles.button, styles.buttonClose]}
+                onPress={() => setModalVisible(!modalVisible)}
+              >
+                <Text style={styles.textStyle}>Hide Modal</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
             <Agenda 
             items={times} 
             renderItem={renderItem.bind(this)} 
-            selected={"2021-07-03"}/>
+            selected={getCurrentDateReverse()}/>
             <Button  icon={<Icon name="event-note" color={colorWhite} borderRadius={50} iconStyle={{fontSize: 40}}  />} 
          containerStyle={{position:'absolute', bottom:60,borderRadius:50,  right:20,shadowColor:"black",shadowOffset:{
             width:0,
@@ -110,8 +139,9 @@ const renderItem = (item) => {
           elevation:11}} 
          buttonStyle={{padding:8,backgroundColor:buttonPrimaryColor}}
         />
-
+        
         </View>
+        
     )
 }
 
@@ -130,4 +160,46 @@ const styles = StyleSheet.create({
     height: 15,
     flex: 1,
     paddingTop: 30
+  },centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22
+  },
+  modalView: {
+    margin: 20,
+    height:400,
+    width:300,
+    backgroundColor: "white",
+    borderRadius: 10,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 11
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2
+  },
+  buttonOpen: {
+    backgroundColor: "#F194FF",
+  },
+  buttonClose: {
+    backgroundColor: "#2196F3",
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center"
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center"
   }})

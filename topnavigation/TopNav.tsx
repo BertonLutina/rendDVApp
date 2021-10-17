@@ -17,7 +17,7 @@ import { firestore } from '../auth/firebase';
 const Tab = createMaterialTopTabNavigator();
 
 
-const TopNav = ({users,group, person}) => {
+const TopNav = ({users,group, person, view}) => {
 
     return (
     <Tab.Navigator
@@ -35,7 +35,7 @@ const TopNav = ({users,group, person}) => {
         name="Chat"
         children={() =>{
           return(
-            <ChatListView users={users} group={group}/>
+            <ChatListView persony={person} users={users} group={group} view={view}/>
           )
          }}
         

@@ -1,12 +1,14 @@
 // Import the functions you need from the SDKs you need
 import * as firebaseAll from "firebase";
+
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebase = firebaseAll.default;
-const firebaseConfig = {
+export const firebase = firebaseAll.default;
+
+export const firebaseConfig = {
   apiKey: "AIzaSyB2CZC_N3-OxNbYi-lwyIkFVr2Gkex2Fwc",
   authDomain: "rendvapp.firebaseapp.com",
   projectId: "rendvapp",
