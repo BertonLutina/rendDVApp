@@ -56,7 +56,7 @@ const NewChatListView = ({navigation,persony}) => {
       user["plan"] = 1;
       user["photo"] = (user.imageAvailable ? user.image.uri : "")
       user.firstName = (user.firstName ? user.firstName : "");
-      user.firstName = (user.firstName ? user.firstName : "");
+      user.lastName = (user.lastName ? user.lastName : "");
       let chat = user;
       createChatter(chat,nav);
     },[]);

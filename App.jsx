@@ -2,7 +2,7 @@ import 'react-native-gesture-handler';
 import React, { useEffect, useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import useCachedResources from './hooks/useCachedResources';
-import { LogBox } from 'react-native';
+import { Alert, LogBox } from 'react-native';
 import { colorWhite } from './constants/Colors';
 import Register from './screens/Login/Register';
 import LoginPage from './screens/Login/LoginPage';
@@ -27,6 +27,7 @@ import GroepsView from './screens/GroepsView/GroepsView';
 import { getChatter, getChatterId, getGroupsId } from './constants/constantFunction';
 import ChatListView from './screens/Views/ChatListView';
 import EventCreater from './screens/Events/EventCreater';
+import EventCreaterGroup from './screens/Events/EventCreaterGroup';
 
 const Stack = createStackNavigator();
 
@@ -34,6 +35,7 @@ function App() {
  
   LogBox.ignoreLogs(['Warning:...']); // ignore specific logs
   LogBox.ignoreLogs(['Remote debugger']);
+  LogBox.ignoreLogs(['Setting a timer']);
   LogBox.ignoreAllLogs(); // ignore all logs
 
   const [person, setPerson] = useState([]);
@@ -57,43 +59,37 @@ function App() {
         }
         return () => {
           unmouted = true;
-        }
-
-        
+        } 
       })();
     }, []);
 
     useEffect(() => {
       let unmouted = false;
       let unmouted2 = false;
-      _firebase.auth().onAuthStateChanged(function(user) {
+      (async () => { _firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
           let p_uid = getChatterId(user.uid);
           let g_uid = getGroupsId(user.uid);
           const unsubscribe = firestore.collection(p_uid).onSnapshot((snapshot) => {
             if(!unmouted)
             setUsers(snapshot.docs.map(doc => doc.data()));
-          return () => {
-            unmouted = true;
-          }
-        });
-
-        const unsubscribegroup = firestore.collection(g_uid).onSnapshot((snapshot) => {
+            return () => {
+              unmouted = true;
+            }
+          });
+          const unsubscribegroup = firestore.collection(g_uid).onSnapshot((snapshot) => {
           if(!unmouted2)
           setGroups(snapshot.docs.map(doc => doc.data()));
-        return () => {
-          unmouted2 = true;
-        }
-      });
+          return () => {
+            unmouted2 = true;
+          }
+          });
 
-
-        } else {
+          }else {
           Alert.alert("LogOut","You're LogOut please Login Again");
         }
+      })();
       });
-        
-
-     
       },[]);
 
     
@@ -120,6 +116,7 @@ function App() {
             <Stack.Screen   name="Chatlist" children={() =>{ return( <ChatListView /> )}} />
             <Stack.Screen   name="ChatView" component={ChatView} />
             <Stack.Screen   name="EventCreater" component={EventCreater} />
+            <Stack.Screen   name="EventCreaterGroup" component={EventCreaterGroup} />
             <Stack.Screen   name="GroepsView" component={GroepsView} />
           </Stack.Navigator>
         </NavigationContainer>

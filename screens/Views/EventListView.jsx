@@ -1,79 +1,95 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import { Alert, StyleSheet, Text, View,Modal } from 'react-native'
 import { Agenda} from 'react-native-calendars'
 import { Dimensions } from 'react-native';
 import { buttonPrimaryColor, colorblue, colorGreen, colorOrange, colorRose, colorWhite, colorYello } from '../../constants/Colors';
-import { Icon } from 'react-native-elements/dist/icons/Icon';
+import { Icon,Button } from 'react-native-elements';
 import { getAll } from 'react-native-contacts';
 import testID from '../Events/testID';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import moment from 'moment';
-import { Button } from 'react-native-elements/dist/buttons/Button';
 import { Pressable } from 'react-native';
-import { getCurrentDateReverse } from '../../constants/constantFunction';
+import { getCurrentDateReverse, getEventId } from '../../constants/constantFunction';
+import { firestore, _firebase } from '../../auth/firebase';
 
 
 
 
 const EventListView = () => {
-    let dateNow = new Date()
+let dateNow = new Date()
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const [items, setItems] = useState({});
 const [userItem, setItem] = useState("");
+const [dates, setDates] = useState({});
 const [modalVisible, setModalVisible] = useState(false);
 
-const [times, setTimes] = useState(
-{'2021-07-03':[{name: 'test-1', teller:1,height: Math.max(50, Math.floor(Math.random() * 150)) },
-{name: 'test-2', teller:2,height: Math.max(50, Math.floor(Math.random() * 150)) }],
-'2021-07-04':[{name: 'test-4', teller:3,height: Math.max(50, Math.floor(Math.random() * 150)) }],
-  '2021-07-05':[{name: 'test-3', teller:1,height: Math.max(50, Math.floor(Math.random() * 150)) }]});
+const [times, setTimes] = useState({});
 
   function ShowModal(item) {
     setItem(item);
     setModalVisible(true);
   }
+  useEffect(() => {
+    let unmouted = false;
+    let ab = new AbortController();
+    _firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+      let array = {}
+        firestore.collection(getEventId(user.uid))
+        .onSnapshot((snapshot) => {
+            //if(!unmouted){
 
-const loadItems = (day) => {
-    setTimeout(() => {
-      for (let i = -15; i < 85; i++) {
-        const time = day.timestamp + i * 24 * 60 * 60 * 1000;
-        const strTime = timeToString(time);
-        if (!items[strTime]) {
-          items[strTime] = [];
-          const numItems = Math.floor(Math.random() * 3 + 1);
-          for (let j = 0; j < numItems; j++) {
-            items[strTime].push({
-              name: strTime,
-              teller: j,
-              height: Math.max(50, Math.floor(Math.random() * 150))
-            });
-          }
-        }
+              Object.values(snapshot.docs.map(doc => doc.data())).map((obj) => {
+                Object.entries(obj).map(([date,values]) => {
+                  if(array.hasOwnProperty(date)){
+                    let val = array[date];
+                    val.push(values)
+                    array[date] = val;
+                  }else{
+                    array[date] = [values];
+                  }
+                });
+                console.log(obj);
+                setDates(obj); 
+              })
+              setTimes(array);
+          //}
+        });
+      
+    } else {
+        Alert.alert("LogOut","You're LogOut please Login Again");
+    }
+    });
+
+    return () => {
+     // unmouted = true;
+      ab.abort();
       }
-      const newItems = {};
-      Object.keys(items).forEach(key => {
-        newItems[key] = items[key];
-      });
-      setItems(newItems);
-    }, 1000);
-  }
+    
+}, [setDates,setTimes])
 
 const renderItem = (item) => {
-  let color = (item.teller == 0 ) ? colorYello : 
-            (item.teller == 1 ) ? colorRose :
-            (item.teller == 2 ) ? colorblue :
-            (item.teller == 3 ) ? colorGreen :
-            (item.teller == 4 ) ? colorOrange : colorYello;
+
     return (
       <TouchableOpacity
         testID={testID.agenda.ITEM}
-        style={[styles.item, {maxHeight: 500, flexDirection:"row"}]}
+        style={[styles.item, {maxHeight: 500, flexDirection:"row",borderRightWidth:3, borderRightColor: item.selectedColor,
+         borderLeftWidth:5, borderLeftColor: item.selectedColor}]}
         onPress={() => ShowModal(item)}
       >
-        <Text style={{backgroundColor: color, height:10,width:10, borderRadius:25}}></Text>
-        <Text style={{fontSize:14, color:"gray", fontFamily:"notoserif"}}> {item.name}</Text>
+          <View style={{maxHeight: 500, flexDirection:"column",justifyContent:"center", flex:2}}>
+            <Text style={{fontSize:20, color:"gray", fontFamily:"notoserif"}}>{item.name}</Text>
+            <Text style={{fontSize:11, color:"gray", fontFamily:"notoserif"}}>ACT: {item.activity}</Text>
+            <Text style={{fontSize:11, color:"gray", alignItems:"center", fontFamily:"notoserif"}}><Icon name="person" containerStyle={{paddingTop:10}} 
+            iconStyle={{fontSize:12}} color={"gray"}/> {item.contactname}</Text>
+          </View>
+          <View style={{maxHeight: 500,flex:1}}>
+            <Text style={{fontSize:12, color:"gray", fontFamily:"notoserif",textAlign:"right"}}>{item.uurvan} - {item.uurtot}</Text>
+          </View>
+          
+        
         
       </TouchableOpacity>
     );
@@ -126,9 +142,16 @@ const renderItem = (item) => {
           </View>
         </Modal>
             <Agenda 
-            items={times} 
+            items={times}
+            firstDay={1} 
+            markedDates={dates}
+            minDate={getCurrentDateReverse}
+            rowHasChanged={(r1, r2) => {return r1.text !== r2.text}}
             renderItem={renderItem.bind(this)} 
-            selected={getCurrentDateReverse()}/>
+            renderEmptyData = {() => {return (<View />);}}
+            scrollEnabled={true}
+            renderEmptyDate={() => {return (<View />);}}
+            selected={getCurrentDateReverse}/>
             <Button  icon={<Icon name="event-note" color={colorWhite} borderRadius={50} iconStyle={{fontSize: 40}}  />} 
          containerStyle={{position:'absolute', bottom:60,borderRadius:50,  right:20,shadowColor:"black",shadowOffset:{
             width:0,

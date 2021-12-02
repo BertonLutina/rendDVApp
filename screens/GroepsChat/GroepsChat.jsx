@@ -1,22 +1,24 @@
+import { useNavigation } from '@react-navigation/core'
 import { LinearGradient } from 'expo-linear-gradient'
 import moment from 'moment'
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { Avatar,Icon,Button} from 'react-native-elements'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
-import { colorGreen, colorRose,colorDarkGreen,colorDarkGrey, colorWhite, selectedBackgroundColor,colorGreenIcon, colorDarkOrange } from '../../constants/Colors'
+import { secundaireColor, colorRose,colorDarkGreen,colorDarkGrey, primairColor, selectedBackgroundColor,colorGreenIcon, colorDarkOrange } from '../../constants/Colors'
 
-const GroepsChat = ({id, name, date,message, selected, photo, plan, seen,onPress}) => {
+const GroepsChat = ({id, name, date,message, selected,members, photo, plan, seen,onPress}) => {
+    const navigation = useNavigation();
     const Naam = (name ? name : 'Geen Naam');
     return (
         <View key={id} style={{ display:'flex',
         elevation: 1,
-        backgroundColor: selected ? selectedBackgroundColor : colorWhite , flexDirection:'row',
+        backgroundColor: selected ? selectedBackgroundColor : primairColor , flexDirection:'row',
         }}>
         {photo && <Avatar containerStyle={{margin:15}} rounded title={Naam} source={{ uri: photo }} size="medium" /> ||
         <View style={{height:50,width:50, display: 'flex', justifyContent: 'center' , borderRadius:50, marginVertical:10, marginHorizontal:10}}>
         <LinearGradient
-              colors={[colorDarkOrange, colorGreen]}
+              colors={[colorDarkOrange, secundaireColor]}
               style={styles.background}
           />
        <Text style={{color:"white", fontSize:18, textAlign:'center'}}>{Naam.split(" ")[0].charAt(0)}{(Naam.split(" ")[1])&&Naam.split(" ")[1].charAt(0)}</Text>
@@ -34,12 +36,13 @@ const GroepsChat = ({id, name, date,message, selected, photo, plan, seen,onPress
                     </View>
                     <View>
                         <Text style={{fontSize:11, textAlign:"right", marginRight:10,color:"grey"}}>
-                           {/*  {date} */} 04/10/2021
+                           {date}
                         </Text >
                         <Text style={{fontSize:11, textAlign:"right", marginRight:10}}>
                             {
                                 plan == 1 ? 
-                                <Button buttonStyle={{padding:2}} icon={<Icon  name="today" color={"black"} iconStyle={{fontSize:26}}/>} type="clear" /> :
+                                <Button buttonStyle={{padding:2}} icon={<Icon  name="today" color={"black"} iconStyle={{fontSize:26}}/>} type="clear" 
+                                onPress={() => navigation.navigate("EventCreaterGroup",{name, id, date, photo, plan, seen, members})} /> :
                                 plan == 2 ?
                                 <Button buttonStyle={{padding:2}} icon={<Icon name="event-available" color={colorGreenIcon} iconStyle={{fontSize:26}}/>} type="clear" /> :
                                 <Button buttonStyle={{padding:2}} icon={<Icon name="event-busy" color={colorRose} iconStyle={{fontSize:26}}/>} type="clear" />

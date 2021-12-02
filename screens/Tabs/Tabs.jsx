@@ -3,7 +3,7 @@ import React, { useState,useLayoutEffect } from 'react';
 import { StatusBar, StyleSheet, View } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import { Icon, Button} from 'react-native-elements'
-import { colorDarkGreen, colorGreen, colorLightGreen } from '../../constants/Colors';
+import { colorDarkGreen, secundaireColor, colorLightGreen } from '../../constants/Colors';
 import TopNav from '../../topnavigation/TopNav';
 import { useNavigation, useRoute } from '@react-navigation/core';
 
@@ -16,7 +16,7 @@ const Tabs = ({route, users, person, group}) => {
   }, [nav, person]);
 const {params} = useRoute();
     return (<View style={styles.containerstyle}>
-                <StatusBar backgroundColor={colorGreen} />
+                <StatusBar backgroundColor={secundaireColor} />
                 <TopNav users={users} group={group} person={person}  view={params?.view}/>
             </View>);
 }

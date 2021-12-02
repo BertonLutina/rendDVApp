@@ -3,7 +3,7 @@ import { Dimensions, FlatList, StyleSheet, Text, View } from 'react-native'
 import ActionSheet from 'react-native-actions-sheet'
 import { Button, Icon, ListItem } from 'react-native-elements'
 import Accordian from '../../../components/Accordian'
-import { colorGreenIcon, colorWhite } from '../../../constants/Colors'
+import { secundaireColor, colorWhite } from '../../../constants/Colors'
 import HeaderAnimated from '../../HeaderComponent.jsx/HeaderAnimated'
 
 const ChatviewUserGroep = ({person,group,renderItem,renderItemGroup,renderSeparator,text,selectedId,filterArray,changeView,actionSheetRef,navigation,pickFromCamera}) => {
@@ -35,7 +35,7 @@ const ChatviewUserGroep = ({person,group,renderItem,renderItemGroup,renderSepara
             buttonStyle={styles.btn_style_camera}
               onPress={() => pickFromCamera()}/>
           <Button icon={<Icon name="chat" 
-                color={colorGreenIcon} borderRadius={50} iconStyle={{fontSize: 30}}  />} 
+                color={secundaireColor} borderRadius={50} iconStyle={{fontSize: 30}}  />} 
                 containerStyle={styles.cont_btn_chat} 
                 buttonStyle={styles.btn_style_chat}
                 onPress={() => {actionSheetRef.current?.setModalVisible();}}/>
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     },
     btn_style_camera_cr:{
       padding:8,
-      backgroundColor:colorGreenIcon,
+      backgroundColor:secundaireColor,
     },
     cont_btn_camera:{
       position:'absolute', 
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     },
     btn_style_camera:{
       padding:2,
-      backgroundColor:colorGreenIcon,
+      backgroundColor:secundaireColor,
     },
     cont_btn_chat:{
       position:'absolute', 

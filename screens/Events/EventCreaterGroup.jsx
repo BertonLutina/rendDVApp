@@ -1,6 +1,6 @@
 import React,{ useState,useLayoutEffect } from 'react'
-import { Alert, ScrollView, StyleSheet, Text, View,Modal, Pressable, TextInput, Keyboard } from 'react-native'
-import {getDayString, getLongDateString, getMonthString, getUseDate, getUseDayString, nowDay, useDay } from '../../constants/date';
+import { Alert, ScrollView, StyleSheet, Text, View, TextInput, Keyboard } from 'react-native'
+import {getUseDayString, useDay } from '../../constants/date';
 import {Picker} from '@react-native-picker/picker';
 import { getCurrentDateReverse } from '../../constants/constantFunction';
 import { backGroundColor, colorblue, colorDarkblue, colorDarkGreen, 
@@ -8,22 +8,22 @@ import { backGroundColor, colorblue, colorDarkblue, colorDarkGreen,
         secundaireColor, colorGrey, colorLightblue, colorLightGreen, 
         colorLightGrey, colorLightOrange, colorLightRose, colorLightYello, 
         colorOrange, colorRose, primairColor, colorYello, disabledColor, 
-        disabledDarkColor, selectedBackgroundColor, colorWhite, colorGreenIcon } from '../../constants/Colors';
-import TimeField from 'react-simple-timefield';
-import { Button, CheckBox, Input, ListItem, Icon} from 'react-native-elements';
+        disabledDarkColor, colorWhite, colorGreenIcon, tertaireColor } from '../../constants/Colors';
+import { Button, CheckBox, Icon} from 'react-native-elements';
 import { useNavigation } from '@react-navigation/core';
-import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
-import { TouchableHighlight, TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import {Calendar} from 'react-native-calendars';
+import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { createEvent } from '../../components/CRUD/crud';
 
 
-const EventCreater = ({navigation,route}) => {
+const EventCreaterGroup = ({navigation,route}) => {
+    const group = route.params;
     useLayoutEffect(() => {
         nav.setOptions({
-          title: person.name === '' ? 'No title' : person.name,
+          title: group.name === '' ? 'No title' : group.name,
           headerBackTitleVisible:false,
           headerStyle: {
-            backgroundColor: secundaireColor, //Set Header color
+            backgroundColor: tertaireColor, //Set Header color
           },
           headerLeft: () => (
             <Button type="clear" 
@@ -33,13 +33,21 @@ const EventCreater = ({navigation,route}) => {
             ),
           headerTitle: () =>(
             <View style={{flexDirection:"row",  alignItems:"center"}}>
-                <Text style={{fontSize:17, color:primairColor}}>{person.name}</Text>
+                <Text style={{fontSize:17, color:primairColor}}>{group.name}</Text>
             </View>
           ),
+          headerRight:() => (
+            <View style={{flex:1, flexDirection:"row", alignItems:"center",paddingRight:10}}>
+                <Text style={{ fontSize:15, color:"white"}}> {group.members.length} </Text>
+                <Icon name="group" color="white"/>
+            </View>
+              )
         });
-      }, [nav, person]);
+      }, [nav, group]);
 
-    const person = route.params;
+      //name, id, date, photo, plan, seen, members
+
+    
     const timeExp = new RegExp("^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$");
     const [kleurkeuze, setKleurKeuze] = useState(colorLightGreen);
     const [text, setText] = useState("")
@@ -55,35 +63,7 @@ const EventCreater = ({navigation,route}) => {
     
     const [disabled, setdisabled] = useState(true);
     const nav = useNavigation();
-
-    function ShowModal(item) {
-        setItem(item);
-        setModalVisible(true);
-    }
-
-    function MarkerType(type) {
-        setSelectMarked(type);
-    }
-
-    function SelectionColor() {
-        let light = [colorLightGreen,colorLightYello,colorLightblue, colorLightRose, colorLightOrange, colorLightGrey];
-        let normal = [secundaireColor,colorYello,colorblue, colorRose, colorOrange, colorGrey];
-        let dark = [colorDarkGreen,colorDarkYello,colorDarkblue, colorDarkRose, colorDarkOrange, colorDarkGrey];
-
-        let colors = [...light, ...normal, ...dark];
-        let arr = [];
-
-        colors.map((e) => {
-            arr.push(
-                <View style={{padding:1}}>
-                    <Button buttonStyle={{backgroundColor:e, borderRadius:20,padding:18, margin:5}} onPress={() => setKleurKeuze(e)}/>
-                </View>
-            )
-        })
-        
-        return arr;
-
-    }
+   
 
     function getValuePick(color) {
       let val = "";
@@ -149,7 +129,7 @@ const EventCreater = ({navigation,route}) => {
       if(dates && Object.keys(dates).length === 0 && Object.getPrototypeOf(dates) === Object.prototype){
           Alert.alert("Error","No data found, Choose a date");
       }else{
-        createEvent(person.id,person.name,dates, navigation);
+        createEvent(group.id,group.name,dates, navigation);
       }
     }
 
@@ -165,7 +145,7 @@ const EventCreater = ({navigation,route}) => {
     function addDates(dateString,obj) {
       if(text.length > 0){
         let newDate = {};
-        newDate[dateString] = {id:person.id, contactname: person.name ,selected: true, selectedColor: selectmarked,title:text,
+        newDate[dateString] = {id:group.id, contactname: group.name ,selected: true, selectedColor: selectmarked,title:text,
                               activity:getValuePick(selectmarked),color: selectmarked,
                               uurvan:"08:00", uurtot:"18:00",view:false,
                               checked:false, name:text, textColor:"white", ...obj};
@@ -193,7 +173,7 @@ const EventCreater = ({navigation,route}) => {
                       color:colorDarkGreen,
                       backgroundColor:colorWhite}}
                       value={text}/>  
-                    <Button buttonStyle={{borderRadius:50,marginLeft:5, backgroundColor:secundaireColor}} onPress={()=> setdisabled(!disabled)} icon={<Icon name="add" size={14} 
+                    <Button buttonStyle={{borderRadius:50,marginLeft:5, backgroundColor:tertaireColor}} onPress={()=> setdisabled(!disabled)} icon={<Icon name="add" size={14} 
                           style={{paddingHorizontal:2,paddingVertical:2}} iconStyle={{fontSize: 20}}  color={primairColor}/>}/>
                   </View>) : (
                   <View style={{ flexDirection:"row", alignItems:"center", margin:2}}>
@@ -344,7 +324,7 @@ const EventCreater = ({navigation,route}) => {
     )
 }
 
-export default EventCreater
+export default EventCreaterGroup
 
 const styles = StyleSheet.create({
     container:{

@@ -16,7 +16,6 @@ export const nowSeconds = new Date(Date.now()).getSeconds();
 export const nowMinutes = new Date(Date.now()).getMinutes();
 export const nowMilliseconds = new Date(Date.now()).getMilliseconds();
 
-
 export const nowUTCDate = new Date(Date.now()).getUTCDate();
 export const nowUTCDay = new Date(Date.now()).getUTCDay();
 export const nowUTCFullYear = new Date(Date.now()).getUTCFullYear();
@@ -35,7 +34,6 @@ export const useSeconds = (e) => new Date(e).getSeconds();
 export const useMinutes = (e) => new Date(e).getMinutes();
 export const useMilliseconds = (e) => new Date(e).getMilliseconds();
 
-
 export const useUTCDate = (e) => new Date(e).getUTCDate();
 export const useUTCDay = (e) => new Date(e).getUTCDay();
 export const useUTCFullYear = (e) => new Date(e).getUTCFullYear();
@@ -49,8 +47,6 @@ export const useUTCMilliseconds = (e) => new Date(e).getUTCMilliseconds();
 export const getCurrentDate=(format)=>{
     let lower = format.toLowerCase();
     let date = "";
-
-    console.log(nowUTCMonth);
     switch (format) {
         case "dd/mm/yyyy":date = `${nowDate}/${nowMonth}/${nowFullYear}`;
             break;
@@ -367,4 +363,40 @@ export const getUseUTCDate=(e,format)=>{
             break;
     }
 return date;
+}
+
+export const getDayString = (l) => {   
+    if (l.toUpperCase() == "L"){
+        return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][ nowDay ];
+    }else{
+        return ["Sun","Mon","Tues","Wed","Thur","Fri","Sat"][ nowDay ];
+    }
+}
+
+export const getMonthString = (l) => {   
+    if (l.toUpperCase() == "L"){
+        return ["January","February","Mars","April","May","June","July","August", "September","October","November","December"][ nowMonth ];
+    }else{
+        return ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug", "Sep","Oct","Nov","Dec"][ nowMonth ];
+    }
+}
+
+export const getUseDayString = (l,index) => {   
+    if (l.toUpperCase() == "L"){
+        return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][ index ];
+    }else{
+        return ["Sun","Mon","Tues","Wed","Thur","Fri","Sat"][ index ];
+    }
+}
+
+export const getUseMonthString = (l,index) => {   
+    if (l.toUpperCase() == "L"){
+        return ["January","February","Mars","April","May","June","July","August", "September","October","November","December"][ index ];
+    }else{
+        return ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug", "Sep","Oct","Nov","Dec"][ index ];
+    }
+}
+
+export const getLongDateString = (l,item) => {
+    return `${getUseDayString(l,useDay(item))} ${useDate(item)} ${getUseMonthString(l,useMonth(item))} ${nowFullYear}`;
 }

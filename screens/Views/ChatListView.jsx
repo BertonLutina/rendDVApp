@@ -14,6 +14,7 @@ import ChatviewUser from './ChatVieuws/ChatviewUser.jsx';
 import GroepsChat from '../GroepsChat/GroepsChat.jsx';
 import ActionSheet from 'react-native-actions-sheet'
 import { getChatterId, getGroupsId } from '../../constants/constantFunction.js';
+import { getDayString, getUseDate } from '../../constants/date.js';
 
 
 
@@ -35,7 +36,7 @@ const pickFromCamera = async () => {
 const actionSheetRef = createRef();
 
 
-const ChatListView = ({route, users,persony,group, view:viewp}) => {
+const ChatListView = ({ users,group, view:viewp}) => {
   const [person, setPerson] = useState(users);
   const [groups, setGroups] = useState(group);
   const [personfilterd, setPersonfilterd] = useState(users);
@@ -50,7 +51,6 @@ const ChatListView = ({route, users,persony,group, view:viewp}) => {
     setPersonfilterd(users);
     settext(text);
   },[settext, setPersonfilterd]);
-
 
   const selected = useCallback((item,num) => {
     if(num == 0)
@@ -102,6 +102,7 @@ const ChatListView = ({route, users,persony,group, view:viewp}) => {
 
       } else {
         Alert.alert("LogOut","You're LogOut please Login Again");
+
       }
 
       
@@ -112,10 +113,9 @@ const ChatListView = ({route, users,persony,group, view:viewp}) => {
   const renderItem = useMemo(() => { return ({ item }) => {
   const checked = (item.id == selectedId) ? true : false;
  // var p_uid = getChatterId(_firebase.auth().currentUser.uid);
-  console.log(item.id);
 
   /* let lastchat = firestore.collection(p_uid).doc(item.id).collection("messages").limit(1).onSnapshot((data) => 
-  console.log(data.size)
+
   ); */
 
     return (
@@ -123,8 +123,8 @@ const ChatListView = ({route, users,persony,group, view:viewp}) => {
             <Chat 
                 name={item.name} 
                 id={item.id} 
-                date={item.date}
-                plan={1}
+                date={getUseDate(item.createDate, "dd/mm/yyyy")}
+                plan={item.plan}
                 onPress={() => selected(item,0)}
                 selected={checked}
                 message={"Hallo dit is een test hall yes".substring(0,20)}
@@ -140,7 +140,9 @@ const ChatListView = ({route, users,persony,group, view:viewp}) => {
               <GroepsChat 
                   id={item.id}
                   name={item.groupname} 
-                  plan={1}
+                  plan={item.plan}
+                  date={getUseDate(item.createDate, "dd/mm/yyyy")}
+                  members = {item.members}
                   onPress={() => selected(item,1)}
                   selected={checked}
                   message={"Hallo dit is een test hall yes".substring(0,20)}
@@ -163,58 +165,58 @@ const ChatListView = ({route, users,persony,group, view:viewp}) => {
 
  
 
-  if ((personfilterd.length > 0 || groups.length > 0)){
-    if(view == 1){
-      return (
-        <ChatviewUser 
-          person = {personfilterd} renderItem = {renderItem} renderSeparator ={renderSeparator} text = {text}
-          selectedId = {selected} filterArray= {filterArray} actionSheetRef ={actionSheetRef} navigation = {navigation}
-          changeView = {changeView} pickFromCamera = {pickFromCamera}
-        />);
-    }else if(view == 2){
-      return (
-        <ChatviewUserGroep
-          person = {personfilterd} group={groups} renderItem={renderItem} renderItemGroup={renderItemGroup} renderSeparator ={renderSeparator} text = {text}
-          selectedId = {selected} filterArray={filterArray} actionSheetRef ={actionSheetRef} navigation = {navigation}
-          changeView = {changeView} pickFromCamera = {pickFromCamera} />
-        );
-    }else if(view == 3){
-      return (
-        <ChatviewGroep 
-          person = {groups} renderItem= {renderItemGroup} renderSeparator ={renderSeparator} text = {text}
-          selectedId = {selected} filterArray= {filterArray} actionSheetRef ={actionSheetRef} navigation = {navigation}
-          changeView = {changeView} pickFromCamera = {pickFromCamera}
+    if ((personfilterd.length > 0 || groups.length > 0)){
+      if(view == 1){
+        return (
+          <ChatviewUser 
+            person = {personfilterd} renderItem = {renderItem} renderSeparator ={renderSeparator} text = {text}
+            selectedId = {selected} filterArray= {filterArray} actionSheetRef ={actionSheetRef} navigation = {navigation}
+            changeView = {changeView} pickFromCamera = {pickFromCamera}
           />);
-    }
-    }else{
-    return (
-    <View style={styles.container}>
-        <Button  icon={<Icon name="chat" color={colorWhite} borderRadius={50} iconStyle={{fontSize: 60}}  />} 
-          containerStyle={styles.cont_btn_camera_cr} 
-          buttonStyle={styles.btn_style_camera_cr}
-          onPress={() => {actionSheetRef.current?.setModalVisible()}}/>
-        <View style={{backgroundColor:colorGreen,position:"relative",flex:1,justifyContent:"center",alignItems:'center',
-      borderRadius:1,}}>
-          <Text style={{fontSize:18, color:colorWhite}}>Let's talk...</Text>
-        </View>
-        <ActionSheet ref={actionSheetRef}>
-          <View>
-            <ListItem bottomDivider onPress={() => navigation.navigate('NewChat')}>
-                <ListItem.Content>
-                  <ListItem.Title>Create new chat</ListItem.Title>
-                </ListItem.Content>
-                <ListItem.Chevron />
-            </ListItem>
-            <ListItem bottomDivider onPress={() => navigation.navigate('NewGroep')}>
-                <ListItem.Content>
-                  <ListItem.Title>Create new groupchat</ListItem.Title>
-                </ListItem.Content>
-                <ListItem.Chevron />
-            </ListItem>
+      }else if(view == 2){
+        return (
+          <ChatviewUserGroep
+            person = {personfilterd} group={groups} renderItem={renderItem} renderItemGroup={renderItemGroup} renderSeparator ={renderSeparator} text = {text}
+            selectedId = {selected} filterArray={filterArray} actionSheetRef ={actionSheetRef} navigation = {navigation}
+            changeView = {changeView} pickFromCamera = {pickFromCamera} />
+          );
+      }else if(view == 3){
+        return (
+          <ChatviewGroep 
+            person = {groups} renderItem= {renderItemGroup} renderSeparator ={renderSeparator} text = {text}
+            selectedId = {selected} filterArray= {filterArray} actionSheetRef ={actionSheetRef} navigation = {navigation}
+            changeView = {changeView} pickFromCamera = {pickFromCamera}
+            />);
+      }
+      }else{
+      return (
+      <View style={styles.container}>
+          <Button  icon={<Icon name="chat" color={colorWhite} borderRadius={50} iconStyle={{fontSize: 60}}  />} 
+            containerStyle={styles.cont_btn_camera_cr} 
+            buttonStyle={styles.btn_style_camera_cr}
+            onPress={() => {actionSheetRef.current?.setModalVisible()}}/>
+          <View style={{backgroundColor:colorGreen,position:"relative",flex:1,justifyContent:"center",alignItems:'center',
+        borderTopLeftRadius:150,borderBottomRightRadius:150, margin:20}}>
+            <Text style={{fontSize:18, color:colorWhite}}>Let's talk...</Text>
           </View>
-        </ActionSheet> 
-    </View>);
-  }
+          <ActionSheet ref={actionSheetRef}>
+            <View>
+              <ListItem bottomDivider onPress={() => navigation.navigate('NewChat')}>
+                  <ListItem.Content>
+                    <ListItem.Title>Create new chat</ListItem.Title>
+                  </ListItem.Content>
+                  <ListItem.Chevron />
+              </ListItem>
+              <ListItem bottomDivider onPress={() => navigation.navigate('NewGroep')}>
+                  <ListItem.Content>
+                    <ListItem.Title>Create new groupchat</ListItem.Title>
+                  </ListItem.Content>
+                  <ListItem.Chevron />
+              </ListItem>
+            </View>
+          </ActionSheet> 
+      </View>);
+    }
 }
 
 export default memo( ChatListView)

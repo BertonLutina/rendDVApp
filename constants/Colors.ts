@@ -4,6 +4,8 @@ const tintColorDark = '#fff';
 export const colorWhite = '#fff';
 export const colorBlack = '#000';
 
+
+
 export const colorRose = '#CA1551';
 export const colorOrange = '#FB4D3D';
 export const colorGreen = '#49B69B'; //#03CEA4
@@ -15,6 +17,11 @@ export const colorGrey = "#ebebeb";
 export const backGroundColor = "#f2F4f5";
 export const buttonPrimaryColor = "#24a0ed";
 export const selectedBackgroundColor = "#f5f5f5";
+export const disabledColor = "#D3D3D3";
+export const disabledDarkColor = "#918d8d";
+
+
+
 
 export const colorLightRose = '#ffb8cf';
 export const colorLightOrange = '#fa9c93';
@@ -59,4 +66,6 @@ export default {
 
 
 
-
+export const primairColor = colorWhite;
+export const secundaireColor = colorGreenIcon;
+export const tertaireColor = colorDarkGreen;

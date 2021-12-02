@@ -10,6 +10,7 @@ export const firebase = firebaseAll.default;
 
 export const firebaseConfig = {
   apiKey: "AIzaSyB2CZC_N3-OxNbYi-lwyIkFVr2Gkex2Fwc",
+  appName: "renDV",
   authDomain: "rendvapp.firebaseapp.com",
   projectId: "rendvapp",
   storageBucket: "rendvapp.appspot.com",

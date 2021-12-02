@@ -35,7 +35,6 @@ export function RandomColor(num) {
 }
 
 export const RandomColors = ({color,color2,h,w,c,name, id}) => {
-    console.log(id);
     return (
         <View key={id} style={{height:h,width:w, borderRadius:c,display: 'flex', justifyContent: 'center', 
                 padding:0,shadowColor:"black",margin:5,

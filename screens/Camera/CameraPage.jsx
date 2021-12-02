@@ -47,6 +47,11 @@ const CameraPage = ({navigation}) => {
       const { status } = await Camera.requestPermissionsAsync();
       setHasPermission(status === 'granted');
     })();
+
+    return () => {
+      setHasPermission(null); // This worked for me
+    };
+
   }, []);
 
   if (hasPermission === null) {

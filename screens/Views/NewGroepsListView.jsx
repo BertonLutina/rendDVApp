@@ -21,7 +21,6 @@ const NewGroepsListView = ({navigation,persony}) => {
   const nav = useNavigation();
 
   useLayoutEffect(() => {
-    console.log(changeText);
     nav.setOptions({
         headerTitle: () =>(
           <View style={{backgroundColor:colorGreen, flexDirection:"row"}}>

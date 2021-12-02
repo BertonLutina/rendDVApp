@@ -5,10 +5,10 @@ import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { Avatar,Icon,Button} from 'react-native-elements'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
-import { colorGreen, colorRose,colorDarkGreen,colorDarkGrey, colorWhite, selectedBackgroundColor,colorGreenIcon } from '../../constants/Colors'
+import { secundaireColor,colorGreen, colorRose,colorDarkGreen,colorDarkGrey, colorWhite, selectedBackgroundColor,colorGreenIcon } from '../../constants/Colors'
 
 const Chat = ({name, id, date,message, selected, photo, plan, seen, onPress}) => {
-    const navigation = useNavigation()
+    const navigation = useNavigation();
     const Naam = (name ? name : 'Geen Naam');
     return (
         <View key={id} style={{ display:'flex',
@@ -18,7 +18,7 @@ const Chat = ({name, id, date,message, selected, photo, plan, seen, onPress}) =>
         {photo && <Avatar containerStyle={{margin:15}} rounded title={Naam} source={{ uri: photo }} size="medium" /> ||
         <View style={{height:50,width:50, display: 'flex', justifyContent: 'center' , borderRadius:50, marginVertical:10, marginHorizontal:10}}>
         <LinearGradient
-              colors={[colorDarkGreen, colorGreen]}
+              colors={[colorDarkGreen, secundaireColor]}
               style={styles.background}
           />
        <Text style={{color:"white", fontSize:18, textAlign:'center'}}>{Naam.split(" ")[0].charAt(0)}{(Naam.split(" ")[1])&&Naam.split(" ")[1].charAt(0)}</Text>

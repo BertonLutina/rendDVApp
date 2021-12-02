@@ -8,7 +8,7 @@ import { Avatar, Icon } from 'react-native-elements';
 import { Button } from 'react-native-elements/dist/buttons/Button';
 import { ScrollView, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { createGroupsChatter } from '../../components/CRUD/crud';
-import { backGroundColor, buttonPrimaryColor, colorDarkGreen, colorGreen, colorGreenIcon, colorOrange, colorRose, colorWhite, colorYello } from '../../constants/Colors';
+import { backGroundColor, buttonPrimaryColor, colorDarkGreen, secundaireColor, colorGreen, colorOrange, colorRose, colorWhite, colorYello } from '../../constants/Colors';
 import { RandomColor, RandomColors } from '../../constants/RandomColor';
 
 
@@ -66,7 +66,7 @@ const NewGroePSum = ({navigation,route}) => {
             <View>
                 <View style={{flexDirection:"row", alignItems:"center", justifyContent:"space-around",borderRadius:20, backgroundColor:colorWhite, height:150, margin:10}}>
                    {image && <Avatar source={{uri : image}} 
-                        rounded={true} size={130} title={Naam} containerStyle={{borderColor:colorGreen, borderWidth:2, marginRight:5}} /> ||
+                        rounded={true} size={130} title={Naam} containerStyle={{borderColor:secundaireColor, borderWidth:2, marginRight:5}} /> ||
                         <View style={{height:100,width:100, borderRadius:90,display: 'flex', justifyContent: 'center', marginVertical:10, marginHorizontal:10}}>
                         <LinearGradient
                             colors={[colorDarkGreen, colorGreen]}
@@ -110,7 +110,7 @@ const NewGroePSum = ({navigation,route}) => {
             </View>
               ),
             headerStyle: {
-                backgroundColor: colorGreen,
+                backgroundColor: secundaireColor,
               },
         });
       }, [navigation ]);
@@ -123,7 +123,8 @@ const NewGroePSum = ({navigation,route}) => {
         groupname:name,
         members:group,
         message:{},
-        photo:photo || ""
+        photo:photo || "",
+        plan:1
         };
         createGroupsChatter(groep,navigation);
       },[]);
@@ -148,7 +149,7 @@ const NewGroePSum = ({navigation,route}) => {
                     })
               }</View>
               </ScrollView>
-              <Button title="Save" buttonStyle={{backgroundColor:colorGreen}} containerStyle={{padding:20}} onPress={creatGroupChat} />
+              <Button title="Save" buttonStyle={{backgroundColor:secundaireColor}} containerStyle={{padding:20}} onPress={creatGroupChat} />
         </View>
     )
 }

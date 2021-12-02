@@ -5,7 +5,7 @@ import {FlatList, ScrollView, TouchableHighlight, TouchableWithoutFeedback } fro
 import Contact from '../Contact/Contact';
 import Call from '../Call/Call';
 import Accordian from '../../components/Accordian.jsx';
-import { backGroundColor, colorblue, colorDarkGreen, colorGreen, colorLightblue, colorLightGreen, colorLightGrey, colorLightOrange, colorLightYello, colorOrange, colorRose, colorWhite, colorYello } from '../../constants/Colors';
+import { backGroundColor, colorblue, colorDarkGreen, colorGreen, colorLightblue, colorLightGreen, colorLightGrey, colorLightOrange, colorLightYello, colorOrange, colorRose, colorWhite, colorYello, secundaireColor } from '../../constants/Colors';
 import { Button } from 'react-native-elements/dist/buttons/Button';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 import HeaderAnimated from '../HeaderComponent.jsx/HeaderAnimated';
@@ -158,7 +158,7 @@ const CallListView = () => {
                           shadowRadius:3.5,
                           shadowOpacity:0.2,
                           elevation:11}} 
-                          buttonStyle={{padding:2,backgroundColor:colorGreen}}
+                          buttonStyle={{padding:2,backgroundColor:secundaireColor}}
                           onPress={() => pickFromCamera()}/>
         </View>
       );
@@ -168,7 +168,7 @@ const CallListView = () => {
       <View style={styles.container}>
           <Button icon={<Icon name="phone" color={colorWhite} borderRadius={50} iconStyle={{fontSize: 60,padding:5}}  />} 
                           containerStyle={styles.buttonCr} 
-                          buttonStyle={{padding:2,backgroundColor:colorGreen}}
+                          buttonStyle={{padding:2,backgroundColor:secundaireColor}}
                           onPress={() => pickFromCamera()}/>
           <View style={styles.buttonCr}>
             <Text style={{fontSize:18}}>Let's call...</Text>

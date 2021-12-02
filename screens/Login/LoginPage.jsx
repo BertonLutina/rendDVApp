@@ -6,7 +6,7 @@ import UrlImage from '../../assets/rendv_images/icon.png'
 import { auth, firebaseConfig, firestore, _firebase } from '../../auth/firebase';
 import * as Contacts from 'expo-contacts';
 import { FirebaseRecaptchaVerifierModal, FirebaseRecaptchaBanner } from 'expo-firebase-recaptcha';
-import { colorblue, colorGreen, colorRose, colorYello, colorDarkGreen, colorWhite, colorLightGreen, colorLightblue,colorLightRose, colorDarkblue } from '../../constants/Colors'
+import { colorblue, colorGreen, colorRose, colorYello, colorDarkGreen, colorWhite, colorLightGreen, colorLightblue,colorLightRose, colorDarkblue, primairColor } from '../../constants/Colors'
 import { Alert } from 'react-native';
 
 const LoginPage = ({navigation}) => {
@@ -94,14 +94,15 @@ const LoginPage = ({navigation}) => {
       let unmouted = false;
       (async function anyNameFunction() {
         await _firebase.auth().onAuthStateChanged(function(user) {
+
           if (user) {
             setloaded(true);
-            setuser(user?.id);
+            setuser(user);
             navigation.navigate('Tabs');
           } else {
             Alert.alert("LogOut","You're LogOut please Login Again");
+            //console.log(user);
           }
-          
         });
       })();
         
@@ -109,7 +110,7 @@ const LoginPage = ({navigation}) => {
       },[]);
 
      
-      if(loaded && user!= null){
+      if(loaded && user == ""){
         return (
           <View style={styles.container}>
             <FirebaseRecaptchaVerifierModal
@@ -174,7 +175,7 @@ const styles = StyleSheet.create({
         justifyContent:"center",
         alignItems:"center",
         borderWidth:2,
-        borderColor:colorGreen,
+        borderColor:primairColor,
         width:"100%",
         bottom:0,
         height:450,
@@ -191,7 +192,7 @@ const styles = StyleSheet.create({
     },
     input:{
         borderStyle:"solid",
-        borderColor:colorGreen,
+        borderColor:primairColor,
         borderWidth:1,
         paddingLeft:10,
         borderRadius:4,

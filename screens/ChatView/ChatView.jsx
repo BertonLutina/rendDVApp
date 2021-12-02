@@ -3,17 +3,17 @@ import { launchCameraAsync, launchImageLibraryAsync, MediaTypeOptions, requestMe
 import moment from 'moment'
 import React, { useState,useEffect,useLayoutEffect } from 'react'
 import { Camera } from 'expo-camera';
-import { ScrollView, StyleSheet, Text, View, TextInput, Alert, Keyboard } from 'react-native'
-import { Icon, Button, Avatar, Input, ListItem} from 'react-native-elements'
-import SearchBar from 'react-native-elements/dist/searchbar/SearchBar-android'
+import { StyleSheet, Text, View,  Alert, Keyboard, Dimensions } from 'react-native'
+import { Icon, Button, Avatar, Input} from 'react-native-elements'
 import { FlatList, TouchableWithoutFeedback } from 'react-native-gesture-handler'
-import { backGroundColor, colorDarkblue, colorDarkGreen, colorDarkGrey, colorDarkRose, colorGreen, colorLightGreen, colorLightGrey, colorLightRose, colorRose, colorText, colorWhite, colorYello } from '../../constants/Colors'
+import {  colorDarkGreen, colorDarkGrey,  secundaireColor, colorLightGreen, colorLightGrey, colorWhite } from '../../constants/Colors'
 import { Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { firestore, _firebase } from '../../auth/firebase';
 import { getChatterId } from '../../constants/constantFunction';
 import { addChats } from '../../components/CRUD/crud';
 import { Photosurl, pickFromGallerys } from '../../constants/cameras';
+import { RandomAvatarTextColor } from '../../constants/RandomColor';
 
 
 const ChatInput = ({text, ChangeText, addChat,pickFromGallery,pickFromCamera}) => {
@@ -21,7 +21,7 @@ const ChatInput = ({text, ChangeText, addChat,pickFromGallery,pickFromCamera}) =
         <View style={{flexDirection:"row", width:"100%",alignItems:"center", height:60, position:"absolute",bottom:0,
             backgroundColor:"transparent"}}>
             <View style={{flexDirection:"row", width:"100%", flex:1, marginLeft:5,
-            height:50,backgroundColor:colorGreen, alignItems:"center",borderRadius:50}}>
+            height:50,backgroundColor:secundaireColor, alignItems:"center",borderRadius:50}}>
             <Button  type="clear" icon={<Icon name="camera" color={colorWhite} onPress={pickFromCamera}/>}/>
             <Button  type="clear" icon={<Icon name="image-search" color={colorWhite} onPress={pickFromGallery} />}/>
                 <Input  placeholder="bericht maken" inputContainerStyle={{backgroundColor:colorWhite,borderRadius:10,paddingLeft:10, borderBottomWidth:0}}
@@ -29,13 +29,11 @@ const ChatInput = ({text, ChangeText, addChat,pickFromGallery,pickFromCamera}) =
                 <Button  type="clear" icon={<Icon name="mood" color={colorWhite}/>}/> 
             </View>
             <Button buttonStyle={{backgroundColor:colorWhite, borderRadius:25, 
-                    borderWidth:1, borderColor:colorGreen, marginHorizontal:5}}  
+                    borderWidth:1, borderColor:secundaireColor, marginHorizontal:5}}  
                     type="clear" icon={<Icon name="send" color={colorDarkGreen}  onPress={addChat}/>}/>
             </View>
     )
 }
-
-
 
 const ChatView = ({route,navigation}) => {
     const [inputs, setInputs] = useState([]);
@@ -47,12 +45,9 @@ const ChatView = ({route,navigation}) => {
 
     function takePicture() {
         let obj = chatter;
-        //chatter.photo = ;
-        //setChatter(chatter);
-        console.log("photos",obj);
+
         let obii = pickFromGallerys(obj);
             setChatter(obii);
-        console.log(Photosurl);
     }
 
     const ChatHeader = ({item}) => {
@@ -62,31 +57,32 @@ const ChatView = ({route,navigation}) => {
     
         return(
             <View >
-                <View style={{flexDirection:"row", alignItems:"center", justifyContent:"space-between", backgroundColor:colorGreen,width:"100%"}}>
+                <View style={{flexDirection:"row", alignItems:"center", justifyContent:"space-between", backgroundColor:secundaireColor,width:"100%"}}>
                 <Button containerStyle={{flex:1}} 
                         type="clear" 
                         icon={<Icon name="wifi-calling" color="white"/>}/>
                     <Text style={{flex:5, fontSize:15, color:"white"}}>{Naam}</Text>
                     {item.photo && <Avatar source={{uri : item.photo}} onPress={takePicture}
                         rounded={true} size={45} title={Naam} containerStyle={{borderColor:colorWhite, borderWidth:2, marginRight:5}} /> ||
-                        <TouchableWithoutFeedback onPress={takePicture}>
-                        <View style={{height:40,width:40, borderRadius:50,display: 'flex', justifyContent: 'center', marginVertical:1, marginHorizontal:1}}>
-                        <LinearGradient
-                            colors={[colorDarkGreen, colorGreen]}
-                            style={styles.circle}
-                            
-                        
-                        />
-                    <Text style={{color:"white", fontSize:24, textAlign:'center'}}>{Naam.split(" ")[0].charAt(0)}{(Naam.split(" ")[1])&&Naam.split(" ")[1].charAt(0)}</Text>
-                    </View> 
+                        <TouchableWithoutFeedback style={{marginLeft:20}} onPress={takePicture}>
+                            <RandomAvatarTextColor
+                            name={Naam}
+                            color={colorDarkGreen}
+                            color2={secundaireColor}
+                            h={45}
+                            w={45}
+                            c={50}
+                            id={1}/>
                     </TouchableWithoutFeedback>
                         }
+                        
                 </View>
                
                 </View>
         )
     }
         useLayoutEffect(() => {
+            const {name, id, date, photo, plan, seen} = person;
             navigation.setOptions({
                 headerTitle: () =>(
                     <ChatHeader item={chatter}/>
@@ -98,11 +94,12 @@ const ChatView = ({route,navigation}) => {
                     icon={<Icon name="arrow-back" color="white"/>} onPress={() => navigation.goBack()}/>
                 <Button containerStyle={{flex:1}} 
                     type="clear" 
-                    icon={<Icon name="event" color="white"/>}/>
+                    icon={<Icon name="event" color="white"/>}
+                    onPress={() => navigation.navigate("EventCreater",{name, id, date, photo, plan, seen})} />
                     </View>
                 ),
                 headerStyle: {
-                    backgroundColor: colorGreen,
+                    backgroundColor: secundaireColor,
                   },
             });
         }, [navigation, person]);
@@ -121,6 +118,7 @@ const ChatView = ({route,navigation}) => {
         }
         
         };
+
     const pickFromGallery = async () => {
         moment.locale("nl-be");
         const {granted} = await requestMediaLibraryPermissionsAsync();
@@ -167,10 +165,10 @@ const ChatView = ({route,navigation}) => {
     const User = ({times, message, id, image,imagecancelled, height, width}) => {
         return(
             <View key={id+"_"+times} style={{flexDirection:"row",justifyContent:"flex-start", padding:10}}>
-                <View style={{backgroundColor:colorGreen,borderColor:colorGreen, borderWidth:1, height:10, width:10, borderRadius:25}}>
+                <View style={{backgroundColor:secundaireColor,borderColor:secundaireColor, borderWidth:1, height:10, width:10, borderRadius:25}}>
             </View>
-                <View style={{backgroundColor:colorGreen, borderColor:colorGreen, borderWidth:1, borderRadius:10}}>
-                    <Text style={{textAlign:'center', fontSize:12, color:colorWhite,padding:4, backgroundColor:colorLightGreen, 
+                <View style={{backgroundColor:secundaireColor, borderColor:secundaireColor, borderWidth:1, borderRadius:10}}>
+                    <Text style={{textAlign:'center', fontSize:9, color:colorWhite,padding:4, backgroundColor:colorLightGreen, 
                     borderTopRightRadius:10 , borderTopLeftRadius:10 }}>{times}</Text>
                     {
                             (image != "")&&<Image source={{uri: image}} style={{ width: width/3, height: height/3 }}/>
@@ -185,15 +183,15 @@ const ChatView = ({route,navigation}) => {
     const Contact = ({times, message, id, image,imagecancelled, height, width}) => {
             return(
             <View key={id+"_"+times} style={{flexDirection:"row", justifyContent:"flex-end",margin:10, elevation:1}}>
-                    <View style={{backgroundColor:colorWhite, borderColor:colorGreen, borderWidth:1, borderRadius:10}}>
-                        <Text style={{textAlign:'center', fontSize:12, color:colorDarkGrey ,padding:4, 
+                    <View style={{backgroundColor:colorWhite, borderColor:secundaireColor, borderWidth:1, borderRadius:10}}>
+                        <Text style={{textAlign:'center', fontSize:10, color:colorDarkGrey ,padding:4, 
                             backgroundColor:colorLightGrey, borderTopRightRadius:10 , borderTopLeftRadius:10}}>{times}</Text>
                         {
                             (image != "")&&<Image source={{uri: image}} style={{ width: width/8, height:height/8}}/> 
                         }
                         <Text style={{textAlign:'left', fontSize:12, color:colorDarkGrey ,padding:10,}}>{message}</Text>
                     </View>
-                    <View style={{backgroundColor:colorWhite,borderColor:colorGreen, borderWidth:1, height:10,width:10, borderRadius:25}}>
+                    <View style={{backgroundColor:colorWhite,borderColor:secundaireColor, borderWidth:1, height:10,width:10, borderRadius:25}}>
                     </View>
             </View>
             )
@@ -208,7 +206,6 @@ const ChatView = ({route,navigation}) => {
 
         _firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
-            console.log(person);
             firestore.collection(getChatterId(user.uid))
             .doc(person.id)
             .collection("messages").orderBy("timestamp","desc")
@@ -223,6 +220,10 @@ const ChatView = ({route,navigation}) => {
         } else {
             Alert.alert("LogOut","You're LogOut please Login Again");
         }
+
+        return () => {
+            setInputs([]); // This worked for me
+          };
         });
         
     }, [setInputs])
@@ -240,6 +241,7 @@ const ChatView = ({route,navigation}) => {
             addChats(message, person.id);
             settext("");
         }
+        Keyboard.dismiss();
     }
 
     function addPhoto(p_photoUrl, p_height, p_width) {
@@ -256,13 +258,16 @@ const ChatView = ({route,navigation}) => {
             addChats(message, person.id);
             settext("");
         }
+
+        Keyboard.dismiss();
     }
     return (
-        <View style={{flex:1, backgroundColor:colorWhite}}>
+        <View style={{ backgroundColor:colorWhite, flex:1}}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <>
             {
                 inputs.length != 0 ? <FlatList
+                            
                             data={inputs}
                             inverted
                             keyboardShouldPersistTaps="never"
