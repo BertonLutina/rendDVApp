@@ -1,8 +1,5 @@
-
 import { firestore, _firebase } from "../../auth/firebase";
-import { getChatterId, getGroupsId } from "../../constants/constantFunction";
-
-
+import { getChatterId, getEventId, getGroupsId } from "../../constants/constantFunction";
 
 export async function addChats(data,id) {
     let dateTime  = _firebase.firestore.FieldValue.serverTimestamp();
@@ -15,7 +12,6 @@ export async function addChats(data,id) {
      firestore.collection(getChatterId(uid)).doc(id).collection("messages").doc(ref).set(data);
 }
 
-
 export async function createChatter(data,back) {
     let uid =  await _firebase.auth().currentUser.uid;
     let dateTime  = _firebase.firestore.FieldValue.serverTimestamp();
@@ -25,6 +21,7 @@ export async function createChatter(data,back) {
                 firestore.collection(getChatterId(uid))
                 .doc(data.id)
                 .set(Object.assign({}, data)).then(() =>back.navigate("Tabs",{
+                    screen: "Chat",
                     view: 1
                 }));
 
@@ -52,6 +49,7 @@ export async function createGroupsChatter(data,back) {
        //if (user.empty){
                firestore.collection(g_uid).doc(ref.id)
                .set(Object.assign({}, data)).then(() => back.navigate("Tabs",{
+                screen: "Chat",
                    view: 3
                }));
        //}else{
@@ -65,19 +63,16 @@ export function readGroupsChatterAll() {
       });
 }
 
-export function createEvent(data) {
-    firestore.collection("Event")
-    .doc(data.id)
-    .set({
-        username : data.name,
-        id: data.id,
-        date: data.date,
-        users: data.users,
-        historychat: data.historychat,
-        shortMessage: data.message,
-        photo: data.photo,
-        plan: data.plan
-    });
+export async function createEvent(id_user, name, data, back) {
+    let uid =  await _firebase.auth().currentUser.uid;
+    let dateTime  = _firebase.firestore.FieldValue.serverTimestamp();
+    let Dates = new Date(Date(dateTime).toString()).toString();
+    let ref = firestore.collection(getChatterId(uid)).doc(id_user).collection("event").doc().id;
+    let newDate = {createDate: Dates,modifiyDate: Dates,events :[Object.assign({}, data)]};
+    firestore.collection(getChatterId(uid)).doc(id_user).update({"plan":2})
+    firestore.collection(getEventId(uid)).doc(id_user).set(Object.assign({}, data)).then(() => back.navigate("Tabs",{
+        screen: "Event"
+    }));
 }
 
 export function createGroupsEvent(data) {
